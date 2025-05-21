@@ -1,4 +1,4 @@
-public class Deporte {
+public abstract class Deporte {
     private String nombre;
     private int cantidadJugadores;
     private String descripcion;
