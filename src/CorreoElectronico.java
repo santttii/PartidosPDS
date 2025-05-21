@@ -5,7 +5,7 @@ public class CorreoElectronico implements IEstrategiaNotificacion {
         setAdapter(adapter);
     }
 
-    public void EnviarNotificacion(Notificacion notificacion) {
+    public void EnviarNotificacion(Notification notificacion) {
         // codear estrategia con CORREO
     }
 

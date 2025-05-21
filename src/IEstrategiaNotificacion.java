@@ -1,3 +1,3 @@
 public interface IEstrategiaNotificacion {
-    public void EnviarNotificacion(Notificacion notificacion);
+    public void EnviarNotificacion(Notification notificacion);
 }

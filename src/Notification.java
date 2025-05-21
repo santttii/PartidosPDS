@@ -1,4 +1,4 @@
-public class Notificacion {
+public class Notification {
 
     public enum EstadoPartido {
         NecesitamosJugadores,
@@ -12,7 +12,7 @@ public class Notificacion {
     private EstadoPartido estado;
     private Deporte deporte;
 
-    public Notificacion(String username, EstadoPartido estado, Deporte deporte) {
+    public Notification(String username, EstadoPartido estado, Deporte deporte) {
         setDeporte(deporte);
         setUsername(username);
         setEstado(estado);
