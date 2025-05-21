@@ -84,6 +84,8 @@ public class Partido implements IObservable {
         return jugadoresObserver;
     }
 
+    // Métodos como observer
+
     public void agregarJugador(IObserver jugador) {
         jugadoresObserver.add(jugador);
     }
@@ -92,9 +94,14 @@ public class Partido implements IObservable {
         jugadoresObserver.remove(jugador);
     }
 
-    //public void notificar() {}
+    public void notificar() {
+        for (IObserver jugador : jugadoresObserver) {
+            jugador.serNotificado(); // Se asume que IObserver tiene un método actualizar()
+        }
+    }
 
-    // Métodos
+    // Métodos propios
+
     public void cambiarEstado(IEstadoPartido nuevo) {
         this.estado = nuevo;
     }
@@ -109,11 +116,5 @@ public class Partido implements IObservable {
 
     public void eliminar(IObserver jugador) {
         jugadoresObserver.remove(jugador);
-    }
-
-    public void notificar() {
-        for (IObserver jugador : jugadoresObserver) {
-            jugador.actualizar(); // Se asume que IObserver tiene un método actualizar()
-        }
     }
 }
