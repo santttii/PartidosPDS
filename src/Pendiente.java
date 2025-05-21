@@ -1,8 +1,7 @@
-public class Confirmado implements IEstadoPartido {
+public class Pendiente implements IEstadoPartido {
     @Override
     public void iniciar(Partido partido) {
-        System.out.println("✅ Partido iniciado.");
-        partido.cambiarEstado(new EnJuego());
+        System.out.println("❌ No se puede iniciar el partido. Aún está pendiente.");
     }
 
     @Override
@@ -12,7 +11,7 @@ public class Confirmado implements IEstadoPartido {
 
     @Override
     public void cancelar(Partido partido) {
-        System.out.println("⚠️ Partido cancelado.");
+        System.out.println("⚠️ Partido cancelado desde estado Pendiente.");
         partido.cambiarEstado(new Cancelado());
     }
 }

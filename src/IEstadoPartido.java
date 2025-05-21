@@ -1,7 +1,5 @@
 public interface IEstadoPartido {
-    void AgregarJugador(Jugador jugador);
-    boolean Confirmar();
-    boolean Iniciar();
-    boolean Finalizar();
-    boolean Cancelar();
+    void iniciar(Partido partido);
+    void finalizar(Partido partido);
+    void cancelar(Partido partido);
 }

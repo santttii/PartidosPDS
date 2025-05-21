@@ -1,23 +1,54 @@
 import java.util.ArrayList;
 
 public class SistemaGestor {
+    // Instancia única del sistema
+    private static SistemaGestor instancia;
+
+    // Lista de jugadores del sistema
     private ArrayList<Jugador> jugadores;
 
-    public SistemaGestor() {
+    // Constructor privado para evitar instanciación externa
+    private SistemaGestor() {
         jugadores = new ArrayList<>();
     }
 
-    public ArrayList<Jugador> getJugadores() { return jugadores; }
+    // Método estático para obtener la única instancia
+    public static SistemaGestor getInstancia() {
+        if (instancia == null) {
+            instancia = new SistemaGestor();
+        }
+        return instancia;
+    }
 
-    public void AltaJugador(Jugador jugador) {
+    // Métodos para manejar jugadores
+
+    public ArrayList<Jugador> getJugadores() {
+        return jugadores;
+    }
+
+    public void registrarJugador(Jugador jugador) {
         jugadores.add(jugador);
     }
 
-    public void BajaJugador(Jugador jugador) {
+    public void eliminarJugador(Jugador jugador) {
         jugadores.remove(jugador);
     }
 
-    public  void ValidarCredenciales(Jugador jugador) {
-        // cuando quiere logearse, valida o no que el mismo exista
+    public Jugador getJugadorPorEmail(String email) {
+        for (Jugador j : jugadores) {
+            if (j.getEmail().equalsIgnoreCase(email)) {
+                return j;
+            }
+        }
+        return null;
+    }
+
+    public Jugador login(String email, String password) {
+        for (Jugador j : jugadores) {
+            if (j.getEmail().equals(email) && j.getPassword().equals(password)) {
+                return j;
+            }
+        }
+        return null;
     }
 }
