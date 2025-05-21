@@ -6,17 +6,15 @@ public class Jugador implements IObserver {
         AVANZADO
     }
 
-    private String nombre;
-    private String apellido;
+    private int idJugador;
     private String username;
     private String password;
     private String email;
     private NivelJugador nivel;
     private Deporte deporteFavorito;
 
-    public Jugador(String nombre, String apellido, String username, String password, String email, NivelJugador nivel, Deporte deporteFavorito) {
-        setNombre(nombre);
-        setApellido(apellido);
+    public Jugador(String username, String password, String email, NivelJugador nivel, Deporte deporteFavorito) {
+        setIdJugador(idJugador);
         setUsername(username);
         setEmail(email);
         setPassword(password);
@@ -24,21 +22,9 @@ public class Jugador implements IObserver {
         setDeporteFavorito(deporteFavorito);
     }
 
-    public String getNombre() {
-        return nombre;
-    }
+    public int getIdJugador() { return idJugador; }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
+    public void setIdJugador(int idJugador) { this.idJugador = idJugador; }
 
     public String getUsername() {
         return username;
@@ -72,31 +58,31 @@ public class Jugador implements IObserver {
         this.nivel = nivel;
     }
 
-    public Deporte getDeporteFavorito() {
-        return deporteFavorito;
-    }
+    public Deporte getDeporteFavorito() { return deporteFavorito; }
 
     public void setDeporteFavorito(Deporte deporteFavorito) {
         this.deporteFavorito = deporteFavorito;
     }
+
+    // METODOS OBSERVER
 
     @Override
     public void serNotificado() {
         // Codear en base al observer y notificaciones
     }
 
-    // METODOS
+    // METODOS PROPIOS
 
-    public void CrearPartido(Partido partido) {
-        // codear crear partido
+    public void Registrarse() {
+        // codear registro
     }
 
     public void IniciarSesion(String email, String password) {
         // codear login
     }
 
-    public void Registrarse(Jugador jugador) {
-        // codear registro
+    public void CrearPartido(Partido partido) {
+        // codear crear partido
     }
 
     public void BuscaPartido() {
