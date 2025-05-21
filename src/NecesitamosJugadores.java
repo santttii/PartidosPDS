@@ -1,27 +1,17 @@
 public class NecesitamosJugadores implements IEstadoPartido {
-
     @Override
-    public void AgregarJugador(Jugador jugador) {
-
+    public void iniciar(Partido partido) {
+        System.out.println("❌ Aún faltan jugadores. No se puede iniciar.");
     }
 
     @Override
-    public boolean Confirmar() {
-        return false;
+    public void finalizar(Partido partido) {
+        System.out.println("❌ No se puede finalizar un partido sin haber comenzado.");
     }
 
     @Override
-    public boolean Iniciar() {
-        return false;
-    }
-
-    @Override
-    public boolean Finalizar() {
-        return false;
-    }
-
-    @Override
-    public boolean Cancelar() {
-        return false;
+    public void cancelar(Partido partido) {
+        System.out.println("⚠️ Partido cancelado desde estado NecesitamosJugadores.");
+        partido.cambiarEstado(new Cancelado());
     }
 }

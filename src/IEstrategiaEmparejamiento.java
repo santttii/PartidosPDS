@@ -1,3 +1,4 @@
 public interface IEstrategiaEmparejamiento {
-    void Emparejar();
+    boolean esApto(Jugador jugador, Partido partido);
+
 }

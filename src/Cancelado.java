@@ -1,27 +1,16 @@
 public class Cancelado implements IEstadoPartido {
-
     @Override
-    public void AgregarJugador(Jugador jugador) {
-
+    public void iniciar(Partido partido) {
+        System.out.println("🚫 No se puede iniciar un partido cancelado.");
     }
 
     @Override
-    public boolean Confirmar() {
-        return false;
+    public void finalizar(Partido partido) {
+        System.out.println("❌ No se puede finalizar un partido cancelado.");
     }
 
     @Override
-    public boolean Iniciar() {
-        return false;
-    }
-
-    @Override
-    public boolean Finalizar() {
-        return false;
-    }
-
-    @Override
-    public boolean Cancelar() {
-        return false;
+    public void cancelar(Partido partido) {
+        System.out.println("⚠️ El partido ya está cancelado.");
     }
 }

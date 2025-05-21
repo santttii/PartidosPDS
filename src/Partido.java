@@ -3,32 +3,40 @@ import java.util.Date;
 
 public class Partido implements IObservable {
 
-    // Enum definido DENTRO de la clase Partido
     public enum NivelJugador {
         PRINCIPIANTE,
         INTERMEDIO,
         AVANZADO
     }
 
-    // Atributos
+    private int cupoMaximo;
     private Deporte deporte;
     private String ubicacion;
     private Date horario;
     private double duracion;
     private IEstadoPartido estado;
     private IEstrategiaEmparejamiento emparejamiento;
+
+    private ArrayList<Jugador> jugadores;
     private ArrayList<IObserver> jugadoresObserver;
 
-    // Constructor
-    public Partido(Deporte deporte, String ubicacion, Date horario, double duracion,
+    public Partido(int cupoMaximo, Deporte deporte, String ubicacion, Date horario, double duracion,
                    IEstadoPartido estado, IEstrategiaEmparejamiento emparejamiento) {
-        setDeporte(deporte);
-        setUbicacion(ubicacion);
-        setHorario(horario);
-        setDuracion(duracion);
-        setEstado(estado);
-        setEmparejamiento(emparejamiento);
-        jugadoresObserver = new ArrayList<>();
+        this.cupoMaximo = cupoMaximo;
+        this.deporte = deporte;
+        this.ubicacion = ubicacion;
+        this.horario = horario;
+        this.duracion = duracion;
+        this.estado = estado;
+        this.emparejamiento = emparejamiento;
+        this.jugadores = new ArrayList<>();
+        this.jugadoresObserver = new ArrayList<>();
+    }
+
+    // Getters y setters
+
+    public int getCupoMaximo() {
+        return cupoMaximo;
     }
 
 
@@ -80,41 +88,118 @@ public class Partido implements IObservable {
         this.emparejamiento = emparejamiento;
     }
 
+    public ArrayList<Jugador> getJugadores() {
+        return jugadores;
+    }
+
     public ArrayList<IObserver> getJugadoresObserver() {
         return jugadoresObserver;
     }
 
-    // Métodos como observer
+    // Método para validar si un jugador es apto según la estrategia
+    public boolean esApto(Jugador jugador) {
+        return emparejamiento.esApto(jugador, this);
+    }
 
-    public void agregarJugador(IObserver jugador) {
+    // Agregar jugador (con validación por estrategia)
+    public void agregarJugador(Jugador jugador) {
+        if (!(estado instanceof Pendiente || estado instanceof NecesitamosJugadores)) {
+            System.out.println("⚠️ No se pueden agregar jugadores en este estado (" + estado.getClass().getSimpleName() + ")");
+            return;
+        }
+
+        if (!esApto(jugador)) {
+            System.out.println("❌ El jugador no cumple los requisitos para este partido.");
+            return;
+        }
+
+        if (jugadores.contains(jugador)) {
+            System.out.println("⚠️ El jugador ya está en el partido.");
+            return;
+        }
+
+        jugadores.add(jugador);
         jugadoresObserver.add(jugador);
+
+        System.out.println("✅ Jugador agregado: " + jugador.getUsername());
+
+        verificarYActualizarEstado();
     }
 
-    public void eliminarJugador(IObserver jugador) {
-        jugadoresObserver.remove(jugador);
-    }
+    private void verificarYActualizarEstado() {
+        int cantidad = jugadores.size();
 
-    public void notificar() {
-        for (IObserver jugador : jugadoresObserver) {
-            jugador.serNotificado(); // Se asume que IObserver tiene un método actualizar()
+        if (cantidad == 0) {
+            cambiarEstado(new Pendiente());
+        } else if (cantidad < cupoMaximo) {
+            cambiarEstado(new NecesitamosJugadores());
+        } else if (cantidad == cupoMaximo) {
+            cambiarEstado(new Confirmado());
+        } else {
+            System.out.println("⚠️ ¡Cupo excedido!");
         }
     }
 
-    // Métodos propios
 
-    public void cambiarEstado(IEstadoPartido nuevo) {
-        this.estado = nuevo;
+    public void eliminarJugador(Jugador jugador) {
+        if (jugadores.remove(jugador)) {
+            jugadoresObserver.remove(jugador);
+            System.out.println("🗑️ Jugador eliminado: " + jugador.getUsername());
+            verificarYActualizarEstado();
+        } else {
+            System.out.println("❌ El jugador no estaba en el partido.");
+        }
     }
 
-    public void cambiarEstrategia(IEstrategiaEmparejamiento nuevo) {
-        this.emparejamiento = nuevo;
+    public String getNombreEstado() {
+        return estado.getClass().getSimpleName();
     }
 
+
+
+    // Métodos del patrón Observer
+
+    @Override
     public void agregar(IObserver jugador) {
         jugadoresObserver.add(jugador);
     }
 
+    @Override
     public void eliminar(IObserver jugador) {
         jugadoresObserver.remove(jugador);
     }
+
+    @Override
+    public void notificar() {
+        for (IObserver jugador : jugadoresObserver) {
+            jugador.serNotificado();
+        }
+    }
+
+    // Cambios de estado y estrategia
+
+    public void cambiarEstado(IEstadoPartido nuevoEstado) {
+        System.out.println("🔄 Transición de estado: " + this.getNombreEstado() + " → " + nuevoEstado.getClass().getSimpleName());
+        this.estado = nuevoEstado;
+    }
+
+
+    public void cambiarEstrategia(IEstrategiaEmparejamiento nuevaEstrategia) {
+        this.emparejamiento = nuevaEstrategia;
+    }
+
+    // Métodos delegados al estado (State Pattern)
+
+    public void iniciarPartido() {
+        estado.iniciar(this);
+    }
+
+    public void finalizarPartido() {
+        estado.finalizar(this);
+    }
+
+    public void cancelarPartido() {
+        estado.cancelar(this);
+    }
+
 }

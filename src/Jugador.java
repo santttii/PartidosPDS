@@ -73,13 +73,6 @@ public class Jugador implements IObserver {
 
     // METODOS PROPIOS
 
-    public void Registrarse() {
-        // codear registro
-    }
-
-    public void IniciarSesion(String email, String password) {
-        // codear login
-    }
 
     public void CrearPartido(Partido partido) {
         // codear crear partido
