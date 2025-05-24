@@ -1,5 +1,0 @@
-public class AdapterJavaEmailNotification implements IAdapterEmailNotification{
-    public void EnviarEmail(Notification notification) {
-        // codear enviar notis
-    }
-}
