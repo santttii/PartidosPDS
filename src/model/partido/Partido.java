@@ -113,24 +113,24 @@ public class Partido implements IObservable {
     // Agregar jugador (con validación por estrategia)
     public void agregarJugador(Jugador jugador) {
         if (!(estado instanceof Pendiente || estado instanceof NecesitamosJugadores)) {
-            System.out.println("⚠️ No se pueden agregar jugadores en este estado (" + estado.getClass().getSimpleName() + ")");
+            System.out.println("No se pueden agregar jugadores en este estado (" + estado.getClass().getSimpleName() + ")");
             return;
         }
 
         if (!esApto(jugador)) {
-            System.out.println("❌ El jugador no cumple los requisitos para este partido.");
+            System.out.println("El jugador no cumple los requisitos para este partido.");
             return;
         }
 
         if (jugadores.contains(jugador)) {
-            System.out.println("⚠️ El jugador ya está en el partido.");
+            System.out.println("El jugador ya está en el partido.");
             return;
         }
 
         jugadores.add(jugador);
         jugadoresObserver.add(jugador);
 
-        System.out.println("✅ Jugador agregado: " + jugador.getUsername());
+        System.out.println("Jugador agregado: " + jugador.getUsername());
 
         verificarYActualizarEstado();
     }
@@ -145,7 +145,7 @@ public class Partido implements IObservable {
         } else if (cantidad == cupoMaximo) {
             cambiarEstado(new Confirmado());
         } else {
-            System.out.println("⚠️ ¡Cupo excedido!");
+            System.out.println("¡Cupo excedido!");
         }
     }
 
@@ -153,10 +153,10 @@ public class Partido implements IObservable {
     public void eliminarJugador(Jugador jugador) {
         if (jugadores.remove(jugador)) {
             jugadoresObserver.remove(jugador);
-            System.out.println("🗑️ Jugador eliminado: " + jugador.getUsername());
+            System.out.println("Jugador eliminado: " + jugador.getUsername());
             verificarYActualizarEstado();
         } else {
-            System.out.println("❌ El jugador no estaba en el partido.");
+            System.out.println("El jugador no estaba en el partido.");
         }
     }
 
@@ -188,7 +188,7 @@ public class Partido implements IObservable {
     // Cambios de estado y estrategia
 
     public void cambiarEstado(IEstadoPartido nuevoEstado) {
-        System.out.println("🔄 Transición de estado: " + this.getNombreEstado() + " → " + nuevoEstado.getClass().getSimpleName());
+        System.out.println("Transición de estado: " + this.getNombreEstado() + " → " + nuevoEstado.getClass().getSimpleName());
         this.estado = nuevoEstado;
     }
 

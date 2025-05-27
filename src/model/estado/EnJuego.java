@@ -1,5 +1,6 @@
 package model.estado;
 
+import model.partido.Jugador;
 import model.partido.Partido;
 
 public class EnJuego implements IEstadoPartido {
@@ -10,6 +11,11 @@ public class EnJuego implements IEstadoPartido {
 
     @Override
     public void finalizar(Partido partido) {
+        if (!(partido.getEstado() instanceof Finalizado)) { 
+            for (Jugador jugador : partido.getJugadores()) {
+                jugador.incrementarCantidadPartidosJugados();
+            }
+        }
         System.out.println("✅ Partido finalizado.");
         partido.cambiarEstado(new Finalizado());
     }

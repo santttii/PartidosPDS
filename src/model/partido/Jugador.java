@@ -16,14 +16,18 @@ public class Jugador implements IObserver {
     private String email;
     private NivelJugador nivel;
     private Deporte deporteFavorito;
+    private String ubicacion;
+    private int cantidadPartidosJugados;
 
-    public Jugador(String username, String password, String email, NivelJugador nivel, Deporte deporteFavorito) {
+    public Jugador(String username, String password, String email, NivelJugador nivel, Deporte deporteFavorito, String ubicacion, int cantidadPartidosJugados) {
         setIdJugador(idJugador);
         setUsername(username);
         setEmail(email);
         setPassword(password);
         setNivel(nivel);
         setDeporteFavorito(deporteFavorito);
+        setUbicacion(ubicacion);
+        setCantidadPartidosJugados(cantidadPartidosJugados);
     }
 
     public int getIdJugador() { return idJugador; }
@@ -66,6 +70,26 @@ public class Jugador implements IObserver {
 
     public void setDeporteFavorito(Deporte deporteFavorito) {
         this.deporteFavorito = deporteFavorito;
+    }
+
+    public String getUbicacion() {
+        return ubicacion;
+    }
+
+    public void setUbicacion(String ubicacion) {
+        this.ubicacion = ubicacion;
+    }
+
+    public int getCantidadPartidosJugados() {
+        return cantidadPartidosJugados;
+    }
+
+    public void setCantidadPartidosJugados(int cantidadPartidosJugados) {
+        this.cantidadPartidosJugados = cantidadPartidosJugados;
+    }
+
+    public void incrementarCantidadPartidosJugados() {
+        this.cantidadPartidosJugados++;
     }
 
     // METODOS OBSERVER
