@@ -1,4 +1,7 @@
 package model.notificacion;
+
+import model.partido.Partido;
+
 public interface IObserver {
-    void serNotificado();
+    void serNotificado(Partido partido, Notification noti);
 }
