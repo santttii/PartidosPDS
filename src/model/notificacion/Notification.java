@@ -1,33 +1,16 @@
 package model.notificacion;
 
+import model.estado.IEstadoPartido;
 import model.partido.Deporte;
 
 public class Notification {
 
-    public enum EstadoPartido {
-        NecesitamosJugadores,
-        Confirmado,
-        Finalizado,
-        EnJuego,
-        PartidoArmado
-    }
-
-    private String username;
-    private EstadoPartido estado;
+    private IEstadoPartido estado;
     private Deporte deporte;
 
-    public Notification(String username, EstadoPartido estado, Deporte deporte) {
-        setDeporte(deporte);
-        setUsername(username);
+    public Notification(IEstadoPartido estado, Deporte deporte) {
         setEstado(estado);
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+        setDeporte(deporte);
     }
 
     public Deporte getDeporte() {
@@ -38,11 +21,12 @@ public class Notification {
         this.deporte = deporte;
     }
 
-    public EstadoPartido getEstado() {
-        return estado;
+
+    public String TextoNotificacion() {
+        return "El partido cambio su estado a " + estado.getClass().getSimpleName() + ".";
     }
 
-    public void setEstado(EstadoPartido estado) {
+    public void setEstado(IEstadoPartido estado) {
         this.estado = estado;
     }
 }

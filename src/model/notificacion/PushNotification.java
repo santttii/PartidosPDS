@@ -7,8 +7,9 @@ public class PushNotification implements IEstrategiaNotificacion {
         setAdapter(adapter);
     }
 
+    @Override
     public void EnviarNotificacion(Notification notificacion) {
-        // codear estrategia con CORREO
+        adapter.EnviarPushNotification(notificacion);
     }
 
     public IAdapterPushNotification getAdapter() {

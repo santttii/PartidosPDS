@@ -1,20 +1,21 @@
 package model.notificacion;
 public class CorreoElectronico implements IEstrategiaNotificacion {
-    private IAdapterPushNotification adapter;
+    private IAdapterEmailNotification adapter;
 
-    public CorreoElectronico(IAdapterPushNotification adapter) {
+    public CorreoElectronico(IAdapterEmailNotification adapter) {
         setAdapter(adapter);
     }
 
+    @Override
     public void EnviarNotificacion(Notification notificacion) {
-        // codear estrategia con CORREO
+        adapter.EnviarEmail(notificacion);
     }
 
-    public IAdapterPushNotification getAdapter() {
+    public IAdapterEmailNotification getAdapter() {
         return adapter;
     }
 
-    public void setAdapter(IAdapterPushNotification adapter) {
+    public void setAdapter(IAdapterEmailNotification adapter) {
         this.adapter = adapter;
     }
 }

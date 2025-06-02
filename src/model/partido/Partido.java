@@ -9,6 +9,7 @@ import model.estado.Pendiente;
 import model.notificacion.IObservable;
 import model.notificacion.IObserver;
 import model.emparejamiento.*;
+import model.notificacion.Notification;
 
 public class Partido implements IObservable {
 
@@ -180,8 +181,9 @@ public class Partido implements IObservable {
 
     @Override
     public void notificar() {
+        Notification noti = new Notification(estado, deporte);
         for (IObserver jugador : jugadoresObserver) {
-            jugador.serNotificado();
+            jugador.serNotificado(this, noti);
         }
     }
 
@@ -190,6 +192,8 @@ public class Partido implements IObservable {
     public void cambiarEstado(IEstadoPartido nuevoEstado) {
         System.out.println("Transición de estado: " + this.getNombreEstado() + " → " + nuevoEstado.getClass().getSimpleName());
         this.estado = nuevoEstado;
+
+        notificar();
     }
 
 

@@ -1,6 +1,8 @@
 package model.partido;
 
 import model.notificacion.IObserver;
+import model.notificacion.Notificador;
+import model.notificacion.Notification;
 
 public class Jugador implements IObserver {
 
@@ -16,16 +18,18 @@ public class Jugador implements IObserver {
     private String email;
     private NivelJugador nivel;
     private Deporte deporteFavorito;
+    private Notificador notificador;
     private String ubicacion;
     private int cantidadPartidosJugados;
 
-    public Jugador(String username, String password, String email, NivelJugador nivel, Deporte deporteFavorito, String ubicacion, int cantidadPartidosJugados) {
+    public Jugador(String username, String password, String email, NivelJugador nivel, Deporte deporteFavorito, Notificador notificador, String ubicacion, int cantidadPartidosJugados) {
         setIdJugador(idJugador);
         setUsername(username);
         setEmail(email);
         setPassword(password);
         setNivel(nivel);
         setDeporteFavorito(deporteFavorito);
+        setNotificador(notificador);
         setUbicacion(ubicacion);
         setCantidadPartidosJugados(cantidadPartidosJugados);
     }
@@ -84,6 +88,14 @@ public class Jugador implements IObserver {
         return cantidadPartidosJugados;
     }
 
+    public Notificador getNotificador() {
+        return notificador;
+    }
+
+    public void setNotificador(Notificador notificador) {
+        this.notificador = notificador;
+    }
+
     public void setCantidadPartidosJugados(int cantidadPartidosJugados) {
         this.cantidadPartidosJugados = cantidadPartidosJugados;
     }
@@ -95,8 +107,8 @@ public class Jugador implements IObserver {
     // METODOS OBSERVER
 
     @Override
-    public void serNotificado() {
-        // Codear en base al observer y notificaciones
+    public void serNotificado(Partido partido, Notification noti) {
+
     }
 
     // METODOS PROPIOS
