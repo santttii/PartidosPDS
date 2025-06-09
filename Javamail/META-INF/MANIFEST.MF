@@ -1,0 +1,52 @@
+Manifest-Version: 1.0
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk-Spec: 11
+Extension-Name: jakarta.mail
+Implementation-Title: jakarta.mail
+Implementation-Vendor: Oracle
+Implementation-Vendor-Id: com.sun
+Implementation-Version: 2.0.1
+Probe-Provider-XML-File-Names: META-INF/gfprobe-provider.xml
+Specification-Title: Jakarta Mail API Design Specification
+Specification-Vendor: Oracle
+Specification-Version: 2.0
+Bnd-LastModified: 1615231656051
+Bundle-Description: Jakarta Mail API
+Bundle-DocURL: http://www.oracle.com
+Bundle-License: http://www.eclipse.org/legal/epl-2.0, https://www.gnu.or
+ g/software/classpath/license.html, http://www.eclipse.org/org/documents
+ /edl-v10.php
+Bundle-ManifestVersion: 2
+Bundle-Name: Jakarta Mail API
+Bundle-SymbolicName: com.sun.mail.jakarta.mail
+Bundle-Vendor: Oracle
+Bundle-Version: 2.0.1
+DynamicImport-Package: *
+Export-Package: com.sun.mail.handlers;uses:="jakarta.activation";version
+ ="2.0.1",com.sun.mail.iap;uses:="com.sun.mail.util";version="2.0.1",com
+ .sun.mail.imap;uses:="com.sun.mail.iap,com.sun.mail.imap.protocol,com.s
+ un.mail.util,jakarta.activation,jakarta.mail,jakarta.mail.event,jakarta
+ .mail.internet,jakarta.mail.search";version="2.0.1",com.sun.mail.imap.p
+ rotocol;uses:="com.sun.mail.iap,com.sun.mail.imap,com.sun.mail.util,jak
+ arta.mail,jakarta.mail.internet,jakarta.mail.search";version="2.0.1",co
+ m.sun.mail.pop3;uses:="com.sun.mail.util,jakarta.mail,jakarta.mail.inte
+ rnet";version="2.0.1",com.sun.mail.smtp;uses:="com.sun.mail.util,jakart
+ a.mail,jakarta.mail.internet";version="2.0.1",com.sun.mail.util;uses:="
+ jakarta.mail,jakarta.mail.internet,javax.net.ssl";version="2.0.1",com.s
+ un.mail.util.logging;uses:="jakarta.mail";version="2.0.1",jakarta.mail;
+ uses:="jakarta.activation,jakarta.mail.event,jakarta.mail.search";versi
+ on="2.0",jakarta.mail.event;uses:="jakarta.mail";version="2.0",jakarta.
+ mail.internet;uses:="jakarta.activation,jakarta.mail";version="2.0",jak
+ arta.mail.search;uses:="jakarta.mail";version="2.0",jakarta.mail.util;u
+ ses:="jakarta.activation,jakarta.mail.internet";version="2.0"
+Import-Package: com.sun.mail.iap;version="[2.0,3)",com.sun.mail.imap;ver
+ sion="[2.0,3)",com.sun.mail.util;version="[2.0,3)",jakarta.activation,j
+ akarta.mail;version="[2.0,3)",jakarta.mail.event;version="[2.0,3)",jaka
+ rta.mail.internet;version="[2.0,3)",jakarta.mail.search;version="[2.0,3
+ )",jakarta.mail.util;version="[2.0,3)",javax.crypto,javax.crypto.spec,j
+ avax.net,javax.net.ssl,javax.security.auth.callback,javax.security.auth
+ .x500,javax.security.sasl;resolution:=optional,javax.xml.transform,java
+ x.xml.transform.stream,sun.security.util;resolution:=optional
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Tool: Bnd-5.1.1.202006162103
+

@@ -18,4 +18,8 @@ public class Notificador {
     public void CambiarEstrategia(IEstrategiaNotificacion nuevaEstrategia) {
         setEstrategia(nuevaEstrategia);
     }
+
+    public void EnviarNotificacion(Notification notificacion) {
+        estrategia.EnviarNotificacion(notificacion);
+    }
 }
