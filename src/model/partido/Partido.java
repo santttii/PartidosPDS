@@ -181,8 +181,8 @@ public class Partido implements IObservable {
 
     @Override
     public void notificar() {
-        Notification noti = new Notification(estado, deporte);
         for (IObserver jugador : jugadoresObserver) {
+            Notification noti = new Notification(estado, deporte, jugador.getEmail());
             jugador.serNotificado(this, noti);
         }
     }
