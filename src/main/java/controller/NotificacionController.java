@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GestorNotificaciones implements Serializable {
+public class NotificacionController implements Serializable {
     private static final long serialVersionUID = 1L;
     private ArrayList<Notification> notificaciones;
 
-    public GestorNotificaciones() {
+    public NotificacionController() {
         notificaciones = new ArrayList<>();
     }
     
