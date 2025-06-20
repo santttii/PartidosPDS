@@ -10,12 +10,25 @@ import data.JugadorDAO;
 import data.PartidoDAO;
 
 public class JugadorController {
-
+    private static JugadorController instancia;
     private final JugadorDAO gestorJugadores;
     private final PartidoDAO gestorPartidos;
 
-    public JugadorController(PartidoDAO gestorPartidos) {
-        this.gestorJugadores = new JugadorDAO();
+    // Constructor privado para singleton
+    private JugadorController() {
+        this.gestorJugadores = JugadorDAO.getInstancia();
+        this.gestorPartidos = PartidoDAO.getInstancia();  // asumiendo PartidoDAO también es singleton y tiene getInstancia()
+    }
+
+    public static JugadorController getInstancia() {
+        if (instancia == null) {
+            instancia = new JugadorController();
+        }
+        return instancia;
+    }
+
+    public JugadorController(PartidoDAO gestorPartidos, JugadorDAO gestorJugadores) {
+        this.gestorJugadores = gestorJugadores;
         this.gestorPartidos = gestorPartidos;
     }
 
@@ -27,9 +40,10 @@ public class JugadorController {
     /**
      * Registra un nuevo jugador en el sistema
      */
-    public Jugador registrarJugador(String username, String password, String email,
+    public Jugador registrarJugador(String username, String email, String password,
                                     Jugador.NivelJugador nivel, Deporte deporteFavorito,
-                                    IEstrategiaNotificacion estrategiaNotificacion, String ubicacion) {
+                                    IEstrategiaNotificacion estrategiaNotificacion, String ubicacion,
+                                    String token) {
         try {
             validarDatosRegistro(username, password, email, nivel, deporteFavorito, estrategiaNotificacion, ubicacion);
 
@@ -48,14 +62,14 @@ public class JugadorController {
                     nivel,
                     deporteFavorito,
                     estrategiaNotificacion,
-                    null, // tokenFCM
-                    0,    // cantidadPartidosJugados
-                    ubicacion
+                    ubicacion,
+                    0,
+                    token
             );
 
 
             if (gestorJugadores.agregarJugador(nuevoJugador)) {
-                System.out.println("Jugador registrado exitosamente: " + username);
+                System.out.println("Jugador registrado exitosamente: " + username + " dlslaskdkdskas");
                 return nuevoJugador;
             } else {
                 System.err.println("Error al agregar el jugador al gestor");

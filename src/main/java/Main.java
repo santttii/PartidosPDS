@@ -1,46 +1,21 @@
 
-import model.estado.Finalizado;
-import model.notificacion.AdapterJavaEmailNotification;
-import model.notificacion.IAdapterEmailNotification;
-import model.notificacion.Notification;
-import model.partido.Futbol;
-import util.FirebaseInitializer;
-import model.notificacion.Notificador;
-import model.notificacion.PushNotification;
-import model.notificacion.AdapterFirebasePushNotification;
+import javafx.application.Application;
+import javafx.stage.Stage;
+import ui.LoginScreen;
 
 
-public class Main {
+public class Main extends Application {
+    @Override
+    public void start(Stage primaryStage) {
+        new LoginScreen(primaryStage).show();
+    }
+
     public static void main(String[] args) {
-        try {
-            //inicializarr firebase
-            FirebaseInitializer.initialize();
-            Futbol futbol = new Futbol("Fútbol", 11, "Partido de fútbol");
+        // Tu código de Firebase y correos puede ir aquí ANTES de launch()
+        System.out.println("Inicializando Firebase...");
+        // ... código de Firebase ...
 
-            String tokenFCM = "dCD4rJJnh7qLlAEX7cLByA:APA91bFdD3BysWkfruY5EOjA8iPGNTAWaYgkrhQjRAE1dawwnRpqbtTD1t9sS7hr4dHT9h5uzUgk540Pmb0GrW1C1BJ4iIFP_-blPtUQa5_TUlWuD4-TUBU";
-
-            Notification notificacion = new Notification(
-                    new Finalizado(),
-                    futbol,
-                    "patriciogabrielvecino@gmail.com",
-                    tokenFCM
-            );
-
-            IAdapterEmailNotification emailAdapter = new AdapterJavaEmailNotification();
-
-            System.out.println("Intentando enviar correo de prueba...");
-            emailAdapter.EnviarEmail(notificacion);
-
-            Notificador notificador = new Notificador(
-              new PushNotification(new AdapterFirebasePushNotification()
-              )
-            );
-            System.out.println("Intentando noti push...");
-            notificador.EnviarNotificacion(notificacion);
-
-        } catch (Exception e) {
-            System.out.println("Error durante la prueba: " + e.getMessage());
-            e.printStackTrace();
-        }
+        // Iniciar JavaFX
+        launch(args);
     }
 }

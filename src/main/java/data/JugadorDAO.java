@@ -7,13 +7,19 @@ import model.partido.Jugador;
 import model.partido.Deporte;
 
 public class JugadorDAO {
-
+    private static JugadorDAO instancia; // ← Singleton
     private ArrayList<Jugador> jugadores;
     private static int siguienteId = 1;
 
-    public JugadorDAO() {
-        this.jugadores = new ArrayList<>();
+    public JugadorDAO() { this.jugadores = new ArrayList<>(); }
+
+    public static JugadorDAO getInstancia() {
+        if (instancia == null) {
+            instancia = new JugadorDAO();
+        }
+        return instancia;
     }
+
 
     /**
      * Agrega un nuevo jugador a la lista
@@ -28,7 +34,10 @@ public class JugadorDAO {
             jugador.setIdJugador(siguienteId++);
         }
 
-        return jugadores.add(jugador);
+        jugadores.add(jugador);
+        System.out.println(jugadores.size() + " jugadores en la listaaaaaaaaaa");
+
+        return true;
     }
 
     /**
@@ -54,11 +63,13 @@ public class JugadorDAO {
      * Busca un jugador por su username
      */
     public Jugador buscarPorUsername(String username) {
+        System.out.println(jugadores.size() + " jugadores en la lista");
         if (username == null || username.trim().isEmpty()) {
             return null;
         }
 
         for (Jugador jugador : jugadores) {
+            System.out.println("Jugador: " + jugador.getUsername());
             if (jugador.getUsername().equals(username)) {
                 return jugador;
             }

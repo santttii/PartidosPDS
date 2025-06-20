@@ -9,11 +9,18 @@ import model.partido.Jugador;
 import model.partido.Deporte;
 
 public class PartidoDAO {
-
+    private static PartidoDAO instancia; // ← Singleton
     private ArrayList<Partido> partidos;
 
     public PartidoDAO() {
         this.partidos = new ArrayList<>();
+    }
+
+    public static PartidoDAO getInstancia() {
+        if (instancia == null) {
+            instancia = new PartidoDAO();
+        }
+        return instancia;
     }
 
     /**
