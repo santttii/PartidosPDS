@@ -1,15 +1,15 @@
-package main.java.controller;
+package controller;
 
 import java.util.Date;
 import java.util.List;
 
-import main.java.model.partido.Partido;
-import main.java.model.partido.Jugador;
-import main.java.model.partido.Deporte;
-import main.java.model.emparejamiento.IEstrategiaEmparejamiento;
-import main.java.model.estado.IEstadoPartido;
-import main.java.model.estado.Pendiente;
-import main.java.data.PartidoDAO;
+import model.partido.Partido;
+import model.partido.Jugador;
+import model.partido.Deporte;
+import model.emparejamiento.IEstrategiaEmparejamiento;
+import model.estado.IEstadoPartido;
+import model.estado.Pendiente;
+import data.PartidoDAO;
 
 public class PartidoController {
 

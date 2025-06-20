@@ -1,4 +1,4 @@
-package main.java.model.partido;
+package model.partido;
 public abstract class Deporte {
     private String nombre;
     private int cantidadJugadores;

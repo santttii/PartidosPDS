@@ -1,7 +1,7 @@
-package main.java.model.emparejamiento;
+package model.emparejamiento;
 
-import main.java.model.partido.Jugador;
-import main.java.model.partido.Partido;
+import model.partido.Jugador;
+import model.partido.Partido;
 
 public interface IEstrategiaEmparejamiento {
     boolean esApto(Jugador jugador, Partido partido);

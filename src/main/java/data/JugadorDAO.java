@@ -1,10 +1,10 @@
-package main.java.data;
+package data;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import main.java.model.partido.Jugador;
-import main.java.model.partido.Deporte;
+import model.partido.Jugador;
+import model.partido.Deporte;
 
 public class JugadorDAO {
 

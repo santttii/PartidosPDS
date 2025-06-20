@@ -1,4 +1,4 @@
-package main.java.model.notificacion;
+package model.notificacion;
 
 public class Notificador {
     private IEstrategiaNotificacion estrategia;

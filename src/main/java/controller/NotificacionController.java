@@ -1,7 +1,7 @@
-package main.java.controller;
+package controller;
 
-import main.java.model.notificacion.Notification;
-import main.java.model.partido.Jugador;
+import model.notificacion.Notification;
+import model.partido.Jugador;
 
 import java.io.Serializable;
 import java.util.ArrayList;

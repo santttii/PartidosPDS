@@ -1,6 +1,6 @@
-package main.java.model.estado;
+package model.estado;
 
-import main.java.model.partido.Partido;
+import model.partido.Partido;
 
 public interface IEstadoPartido {
     void iniciar(Partido partido);

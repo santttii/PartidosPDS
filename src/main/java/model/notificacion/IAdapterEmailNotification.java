@@ -1,4 +1,4 @@
-package main.java.model.notificacion;
+package model.notificacion;
 public interface IAdapterEmailNotification {
     void EnviarEmail(Notification notification);
 }

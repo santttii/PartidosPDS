@@ -1,18 +1,20 @@
-package main.java.model.notificacion;
+package model.notificacion;
 
-import main.java.model.estado.IEstadoPartido;
-import main.java.model.partido.Deporte;
+import model.estado.IEstadoPartido;
+import model.partido.Deporte;
 
 public class Notification {
 
     private IEstadoPartido estado;
     private Deporte deporte;
     private String correoDestinatario;
+    private String tokenFCM;
 
-    public Notification(IEstadoPartido estado, Deporte deporte, String correoDestinatario) {
+    public Notification(IEstadoPartido estado, Deporte deporte, String correoDestinatario,  String tokenFCM) {
         setEstado(estado);
         setDeporte(deporte);
         setCorreoDestinatario(correoDestinatario);
+        setTokenFCM(tokenFCM);
     }
 
     public Deporte getDeporte() {
@@ -37,5 +39,13 @@ public class Notification {
 
     public void setCorreoDestinatario(String correoDestinatario) {
         this.correoDestinatario = correoDestinatario;
+    }
+
+    public String getTokenFCM() {
+        return tokenFCM;
+    }
+
+    public void setTokenFCM(String tokenFCM) {
+        this.tokenFCM = tokenFCM;
     }
 }

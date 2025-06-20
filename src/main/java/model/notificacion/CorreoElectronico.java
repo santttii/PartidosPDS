@@ -1,4 +1,7 @@
-package main.java.model.notificacion;
+package model.notificacion;
+import model.notificacion.Notification;
+import model.notificacion.IAdapterEmailNotification;
+import model.notificacion.IEstrategiaNotificacion;
 public class CorreoElectronico implements IEstrategiaNotificacion {
     private IAdapterEmailNotification adapter;
 

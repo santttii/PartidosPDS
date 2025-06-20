@@ -1,4 +1,4 @@
-package main.java.model.partido;
+package model.partido;
 public class Basquet extends Deporte {
 
     public Basquet(String nombre, int cantidadJugadores, String descripcion) {

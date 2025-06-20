@@ -1,4 +1,4 @@
-package main.java.model.partido;
+package model.partido;
 
 public class Voley extends Deporte {
 

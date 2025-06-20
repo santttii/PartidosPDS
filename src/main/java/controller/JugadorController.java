@@ -1,13 +1,13 @@
-package main.java.controller;
+package controller;
 
 import java.util.List;
 
-import main.java.model.partido.Jugador;
-import main.java.model.partido.Partido;
-import main.java.model.partido.Deporte;
-import main.java.model.notificacion.IEstrategiaNotificacion;
-import main.java.data.JugadorDAO;
-import main.java.data.PartidoDAO;
+import model.partido.Jugador;
+import model.partido.Partido;
+import model.partido.Deporte;
+import model.notificacion.IEstrategiaNotificacion;
+import data.JugadorDAO;
+import data.PartidoDAO;
 
 public class JugadorController {
 
@@ -41,8 +41,18 @@ public class JugadorController {
                 throw new IllegalArgumentException("El email ya está registrado");
             }
 
-            Jugador nuevoJugador = new Jugador(username, password, email, nivel,
-                    deporteFavorito, estrategiaNotificacion, ubicacion, 0);
+            Jugador nuevoJugador = new Jugador(
+                    username,
+                    password,
+                    email,
+                    nivel,
+                    deporteFavorito,
+                    estrategiaNotificacion,
+                    null, // tokenFCM
+                    0,    // cantidadPartidosJugados
+                    ubicacion
+            );
+
 
             if (gestorJugadores.agregarJugador(nuevoJugador)) {
                 System.out.println("Jugador registrado exitosamente: " + username);

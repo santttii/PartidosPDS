@@ -1,10 +1,9 @@
-package main.java.model.partido;
+package model.partido;
 
-import main.java.model.notificacion.IEstrategiaNotificacion;
-import main.java.model.notificacion.IObserver;
-import main.java.model.notificacion.Notificador;
-import main.java.model.notificacion.Notification;
-
+import model.notificacion.IEstrategiaNotificacion;
+import model.notificacion.IObserver;
+import model.notificacion.Notificador;
+import model.notificacion.Notification;
 public class Jugador implements IObserver {
 
     public enum NivelJugador {
@@ -22,8 +21,10 @@ public class Jugador implements IObserver {
     private Notificador notificador;
     private String ubicacion;
     private int cantidadPartidosJugados;
+    private String tokenFCM;
 
-    public Jugador(String username, String password, String email, NivelJugador nivel, Deporte deporteFavorito, IEstrategiaNotificacion estrategiaElegida, String ubicacion, int cantidadPartidosJugados) {
+
+    public Jugador(String username, String password, String email, NivelJugador nivel, Deporte deporteFavorito, IEstrategiaNotificacion estrategiaElegida, String ubicacion, int cantidadPartidosJugados,  String tokenFCM) {
         setIdJugador(idJugador);
         setUsername(username);
         setEmail(email);
@@ -33,6 +34,7 @@ public class Jugador implements IObserver {
         setNotificador(estrategiaElegida);
         setUbicacion(ubicacion);
         setCantidadPartidosJugados(cantidadPartidosJugados);
+        setTokenFCM(tokenFCM);
     }
 
     public int getIdJugador() { return idJugador; }
@@ -60,10 +62,19 @@ public class Jugador implements IObserver {
         return email;
     }
 
+    @Override
+    public String getTokenFCM() {
+        return this.tokenFCM;
+    }
+
+
     public void setEmail(String email) {
         this.email = email;
     }
 
+    public void setTokenFCM(String tokenFCM) {
+        this.tokenFCM = tokenFCM;
+    }
     public NivelJugador getNivel() {
         return nivel;
     }

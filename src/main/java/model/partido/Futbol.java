@@ -1,4 +1,4 @@
-package main.java.model.partido;
+package model.partido;
 
 public class Futbol extends Deporte {
     public Futbol(String nombre, int cantidadJugadores, String descripcion) {

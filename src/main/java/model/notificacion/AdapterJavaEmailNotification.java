@@ -1,4 +1,4 @@
-package main.java.model.notificacion;
+package model.notificacion;
 
 
 import jakarta.mail.*;
@@ -7,7 +7,7 @@ import jakarta.mail.internet.*;
 import java.util.Properties;
 
 public class AdapterJavaEmailNotification implements IAdapterEmailNotification{
-    // Correo y contraseña del remitente (puedes mover esto a un archivo config si prefieres)
+    // Correo y contraseña del remitente ( mover esto a un archivo config si prefieres)
     private final String remitente = "martinkpce@gmail.com";  // Reemplaza con tu correo real
     private final String password = "wegj gfxt iiyo easy";        // Reemplaza con tu contraseña real
 

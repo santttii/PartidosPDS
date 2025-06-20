@@ -1,6 +1,6 @@
-package main.java.model.estado;
+package model.estado;
 
-import main.java.model.partido.Partido;
+import model.partido.Partido;
 
 public class NecesitamosJugadores implements IEstadoPartido {
     @Override

@@ -1,15 +1,16 @@
-package main.java.model.partido;
+package model.partido;
 import java.util.ArrayList;
 import java.util.Date;
 
-import main.java.model.emparejamiento.IEstrategiaEmparejamiento;
-import main.java.model.estado.Confirmado;
-import main.java.model.estado.IEstadoPartido;
-import main.java.model.estado.NecesitamosJugadores;
-import main.java.model.estado.Pendiente;
-import main.java.model.notificacion.IObservable;
-import main.java.model.notificacion.IObserver;
-import main.java.model.notificacion.Notification;
+import model.partido.Jugador;
+import model.emparejamiento.IEstrategiaEmparejamiento;
+import model.estado.Confirmado;
+import model.estado.IEstadoPartido;
+import model.estado.NecesitamosJugadores;
+import model.estado.Pendiente;
+import model.notificacion.IObservable;
+import model.notificacion.IObserver;
+import model.notificacion.Notification;
 
 public class Partido implements IObservable {
 
@@ -182,7 +183,7 @@ public class Partido implements IObservable {
     @Override
     public void notificar() {
         for (IObserver jugador : jugadoresObserver) {
-            Notification noti = new Notification(estado, deporte, jugador.getEmail());
+            Notification noti = new Notification(estado, deporte, jugador.getEmail(), jugador.getTokenFCM());
             jugador.serNotificado(this, noti);
         }
     }

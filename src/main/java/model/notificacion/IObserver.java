@@ -1,9 +1,9 @@
-package main.java.model.notificacion;
+package model.notificacion;
 
-import main.java.model.partido.Partido;
+import model.partido.Partido;
 
 public interface IObserver {
     String getEmail();
-
+    String getTokenFCM();
     void serNotificado(Partido partido, Notification noti);
 }
