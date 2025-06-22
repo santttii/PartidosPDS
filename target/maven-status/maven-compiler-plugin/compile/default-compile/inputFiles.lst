@@ -1,39 +1,39 @@
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\estado\EnJuego.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\data\JugadorDAO.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\notificacion\CorreoElectronico.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\data\PartidoDAO.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\partido\Voley.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\notificacion\AdapterFirebasePushNotification.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\estado\Pendiente.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\controller\PartidoController.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\ui\SearchMatchesScreen.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\util\FirebaseInitializer.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\notificacion\AdapterJavaEmailNotification.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\Main.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\notificacion\Notificador.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\partido\Futbol.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\notificacion\IAdapterPushNotification.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\notificacion\Notification.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\emparejamiento\IEstrategiaEmparejamiento.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\estado\Confirmado.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\notificacion\IEstrategiaNotificacion.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\partido\Jugador.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\emparejamiento\EmparejamientoPorCercania.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\estado\IEstadoPartido.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\notificacion\IObserver.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\util\Serializador.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\estado\NecesitamosJugadores.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\partido\Deporte.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\ui\RegisterScreen.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\controller\NotificacionController.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\controller\JugadorController.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\notificacion\IObservable.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\estado\Finalizado.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\notificacion\PushNotification.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\partido\Partido.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\emparejamiento\EmparejamientoPorHistorial.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\notificacion\IAdapterEmailNotification.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\estado\Cancelado.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\ui\LoginScreen.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\emparejamiento\EmparejamientoPorNivel.java
-D:\Todo aca\Proyectos_de_Java\PartidosPDS\src\main\java\model\partido\Basquet.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\ui\LoginScreen.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\emparejamiento\EmparejamientoPorCercania.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\controller\PartidoController.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\notificacion\IAdapterPushNotification.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\estado\IEstadoPartido.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\partido\Futbol.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\notificacion\AdapterFirebasePushNotification.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\data\PartidoDAO.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\controller\NotificacionController.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\partido\Deporte.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\partido\Jugador.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\estado\Pendiente.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\notificacion\AdapterJavaEmailNotification.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\notificacion\CorreoElectronico.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\notificacion\IEstrategiaNotificacion.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\util\FirebaseInitializer.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\data\JugadorDAO.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\estado\Confirmado.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\notificacion\IAdapterEmailNotification.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\util\Serializador.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\estado\Cancelado.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\notificacion\Notification.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\estado\NecesitamosJugadores.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\partido\Voley.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\emparejamiento\EmparejamientoPorHistorial.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\partido\Basquet.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\notificacion\IObserver.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\controller\JugadorController.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\notificacion\PushNotification.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\emparejamiento\EmparejamientoPorNivel.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\notificacion\IObservable.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\partido\Partido.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\estado\EnJuego.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\notificacion\Notificador.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\ui\SearchMatchesScreen.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\Main.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\emparejamiento\IEstrategiaEmparejamiento.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\model\estado\Finalizado.java
+C:\Users\santi\OneDrive\Documentos\Facultad\PDS\PartidosPDS\src\main\java\ui\RegisterScreen.java
