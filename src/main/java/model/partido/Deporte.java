@@ -1,5 +1,8 @@
 package model.partido;
-public abstract class Deporte {
+
+import java.io.Serializable;
+
+public abstract class Deporte implements Serializable {
     private String nombre;
     private int cantidadJugadores;
     private String descripcion;

@@ -19,12 +19,15 @@ public class Serializador {
         String rutaArchivo = DIRECTORIO_DATOS + nombreArchivo + ".ser";
         try (ObjectOutputStream out = new ObjectOutputStream(
                 new FileOutputStream(rutaArchivo))) {
+            System.out.println("Intentando guardar objeto de tipo: " + objeto.getClass().getName());
             out.writeObject(objeto);
             System.out.println("Datos guardados exitosamente en " + nombreArchivo);
         } catch (IOException e) {
             System.err.println("Error al guardar los datos: " + e.getMessage());
+            e.printStackTrace();
         }
     }
+
 
     public static <T> T cargarDatos(String nombreArchivo, Class<T> clase) {
         String rutaArchivo = DIRECTORIO_DATOS + nombreArchivo + ".ser";
