@@ -16,11 +16,15 @@ public class PartidoController {
     private final PartidoDAO gestorPartidos;
 
     public PartidoController() {
-        this.gestorPartidos = new PartidoDAO();
+        this.gestorPartidos = PartidoDAO.getInstancia();
+        // ✅ CARGAR DATOS AL INICIALIZAR
+        gestorPartidos.cargar();
     }
 
     public PartidoController(PartidoDAO gestorPartidos) {
         this.gestorPartidos = gestorPartidos;
+        // ✅ CARGAR DATOS AL INICIALIZAR
+        gestorPartidos.cargar();
     }
 
     public Partido crearPartido(int cupoMaximo, Deporte deporte, String ubicacion,
@@ -33,6 +37,8 @@ public class PartidoController {
                     horario, duracion, estadoInicial, emparejamiento);
 
             if (gestorPartidos.agregarPartido(nuevoPartido)) {
+                // ✅ GUARDAR DESPUÉS DE CREAR
+                gestorPartidos.guardar();
                 System.out.println("Partido creado exitosamente en " + ubicacion + " para " + horario);
                 return nuevoPartido;
             } else {
@@ -53,7 +59,14 @@ public class PartidoController {
             }
             int jugadoresAntes = partido.getJugadores().size();
             partido.agregarJugador(jugador);
-            return partido.getJugadores().size() > jugadoresAntes;
+            boolean resultado = partido.getJugadores().size() > jugadoresAntes;
+
+            if (resultado) {
+                // ✅ GUARDAR DESPUÉS DE MODIFICAR
+                gestorPartidos.guardar();
+            }
+
+            return resultado;
         } catch (Exception e) {
             System.err.println("Error al agregar jugador al partido: " + e.getMessage());
             return false;
@@ -67,7 +80,14 @@ public class PartidoController {
             }
             int jugadoresAntes = partido.getJugadores().size();
             partido.eliminarJugador(jugador);
-            return partido.getJugadores().size() < jugadoresAntes;
+            boolean resultado = partido.getJugadores().size() < jugadoresAntes;
+
+            if (resultado) {
+                // ✅ GUARDAR DESPUÉS DE MODIFICAR
+                gestorPartidos.guardar();
+            }
+
+            return resultado;
         } catch (Exception e) {
             System.err.println("Error al eliminar jugador del partido: " + e.getMessage());
             return false;
@@ -80,6 +100,8 @@ public class PartidoController {
                 throw new IllegalArgumentException("El partido no puede ser nulo");
             }
             partido.iniciarPartido();
+            // ✅ GUARDAR DESPUÉS DE CAMBIAR ESTADO
+            gestorPartidos.guardar();
             return true;
         } catch (Exception e) {
             System.err.println("Error al iniciar partido: " + e.getMessage());
@@ -96,6 +118,8 @@ public class PartidoController {
             for (Jugador jugador : partido.getJugadores()) {
                 jugador.incrementarCantidadPartidosJugados();
             }
+            // ✅ GUARDAR DESPUÉS DE FINALIZAR
+            gestorPartidos.guardar();
             return true;
         } catch (Exception e) {
             System.err.println("Error al finalizar partido: " + e.getMessage());
@@ -109,6 +133,8 @@ public class PartidoController {
                 throw new IllegalArgumentException("El partido no puede ser nulo");
             }
             partido.cancelarPartido();
+            // ✅ GUARDAR DESPUÉS DE CANCELAR
+            gestorPartidos.guardar();
             return true;
         } catch (Exception e) {
             System.err.println("Error al cancelar partido: " + e.getMessage());
@@ -122,6 +148,8 @@ public class PartidoController {
                 throw new IllegalArgumentException("El partido o estrategia no puede ser nulo");
             }
             partido.cambiarEstrategia(nuevaEstrategia);
+            // ✅ GUARDAR DESPUÉS DE CAMBIAR ESTRATEGIA
+            gestorPartidos.guardar();
             System.out.println("Estrategia de emparejamiento cambiada exitosamente");
             return true;
         } catch (Exception e) {
@@ -129,6 +157,25 @@ public class PartidoController {
             return false;
         }
     }
+
+    public boolean eliminarPartido(Partido partido) {
+        try {
+            if (partido == null) {
+                throw new IllegalArgumentException("El partido no puede ser nulo");
+            }
+            boolean resultado = gestorPartidos.eliminarPartido(partido);
+            if (resultado) {
+                // ✅ GUARDAR DESPUÉS DE ELIMINAR
+                gestorPartidos.guardar();
+            }
+            return resultado;
+        } catch (Exception e) {
+            System.err.println("Error al eliminar partido: " + e.getMessage());
+            return false;
+        }
+    }
+
+    // ========== MÉTODOS DE BÚSQUEDA - NO NECESITAN GUARDAR ==========
 
     public String obtenerInformacionPartido(Partido partido) {
         if (partido == null) return "Partido no válido";
@@ -151,6 +198,58 @@ public class PartidoController {
         }
 
         return info.toString();
+    }
+
+    public List<Partido> buscarPartidosPorDeporte(Deporte deporte) {
+        return gestorPartidos.buscarPorDeporte(deporte);
+    }
+
+    public List<Partido> buscarPartidosPorUbicacion(String ubicacion) {
+        return gestorPartidos.buscarPorUbicacion(ubicacion);
+    }
+
+    public List<Partido> buscarPartidosPorEstado(String nombreEstado) {
+        return gestorPartidos.buscarPorEstado(nombreEstado);
+    }
+
+    public List<Partido> buscarPartidosDisponibles() {
+        return gestorPartidos.buscarDisponibles();
+    }
+
+    public List<Partido> buscarPartidosDisponiblesParaJugador(Jugador jugador) {
+        return gestorPartidos.buscarDisponiblesParaJugador(jugador);
+    }
+
+    public List<Partido> buscarPartidosPorJugador(Jugador jugador) {
+        return gestorPartidos.buscarPorJugador(jugador);
+    }
+
+    public List<Partido> buscarPartidosPorFecha(Date fecha) {
+        return gestorPartidos.buscarPorFecha(fecha);
+    }
+
+    public List<Partido> buscarPartidosDespuesDeFecha(Date fecha) {
+        return gestorPartidos.buscarDespuesDeFecha(fecha);
+    }
+
+    public List<Partido> buscarPartidosPorCriterios(Deporte deporte, String ubicacion, String estado, Date fechaDesde) {
+        return gestorPartidos.buscarPorCriterios(deporte, ubicacion, estado, fechaDesde);
+    }
+
+    public List<Partido> obtenerPartidosProximos() {
+        return gestorPartidos.obtenerPartidosProximos();
+    }
+
+    public List<Partido> obtenerTodosLosPartidos() {
+        return gestorPartidos.obtenerTodos();
+    }
+
+    public int obtenerCantidadPartidos() {
+        return gestorPartidos.obtenerCantidad();
+    }
+
+    public String obtenerEstadisticasPartidos() {
+        return gestorPartidos.obtenerEstadisticas();
     }
 
     public PartidoDAO getGestorPartidos() {

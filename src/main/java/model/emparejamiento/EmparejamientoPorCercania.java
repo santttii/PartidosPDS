@@ -3,7 +3,10 @@ package model.emparejamiento;
 import model.partido.Jugador;
 import model.partido.Partido;
 
-public class EmparejamientoPorCercania implements IEstrategiaEmparejamiento {
+import java.io.Serializable;
+
+public class EmparejamientoPorCercania implements IEstrategiaEmparejamiento, Serializable {
+    private static final long serialVersionUID = 1L;
     private String zonaRequerida;
 
     public EmparejamientoPorCercania(String zonaRequerida) {

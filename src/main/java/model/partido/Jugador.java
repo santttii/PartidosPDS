@@ -4,7 +4,10 @@ import model.notificacion.IEstrategiaNotificacion;
 import model.notificacion.IObserver;
 import model.notificacion.Notificador;
 import model.notificacion.Notification;
-public class Jugador implements IObserver {
+
+import java.io.Serializable;
+
+public class Jugador implements IObserver, Serializable {
 
     public enum NivelJugador {
         PRINCIPIANTE,

@@ -31,6 +31,7 @@ model\partido\Futbol.class
 model\notificacion\AdapterFirebasePushNotification.class
 model\notificacion\Notification.class
 model\partido\Deporte.class
+ui\SearchMatchesScreen.class
 model\estado\Cancelado.class
 ui\LoginScreen.class
 model\emparejamiento\EmparejamientoPorNivel.class
@@ -40,3 +41,4 @@ model\emparejamiento\IEstrategiaEmparejamiento.class
 model\estado\NecesitamosJugadores.class
 ui\RegisterScreen.class
 model\notificacion\CorreoElectronico.class
+ui\SearchMatchesScreen$PartidoListCell.class

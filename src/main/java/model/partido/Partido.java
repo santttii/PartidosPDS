@@ -1,4 +1,5 @@
 package model.partido;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -12,7 +13,7 @@ import model.notificacion.IObservable;
 import model.notificacion.IObserver;
 import model.notificacion.Notification;
 
-public class Partido implements IObservable {
+public class Partido implements IObservable, Serializable {
 
     public enum NivelJugador {
         PRINCIPIANTE,

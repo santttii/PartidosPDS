@@ -1,3 +1,4 @@
+
 package ui;
 
 import controller.JugadorController;
@@ -38,10 +39,10 @@ public class LoginScreen {
                     passwordField.getText()
             );
 
-
             if (jugador != null) {
                 new Alert(Alert.AlertType.INFORMATION, "Bienvenido " + jugador.getUsername()).showAndWait();
-                // TODO: ir a pantalla Home
+                // Ir a la pantalla de búsqueda de partidos
+                new SearchMatchesScreen(stage, jugador).show();
             } else {
                 errorLabel.setText("Credenciales incorrectas.");
             }

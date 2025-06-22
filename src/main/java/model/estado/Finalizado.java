@@ -2,7 +2,10 @@ package model.estado;
 
 import model.partido.Partido;
 
-public class Finalizado implements IEstadoPartido {
+import java.io.Serializable;
+
+public class Finalizado implements IEstadoPartido, Serializable {
+    private static final long serialVersionUID = 1L;
     @Override
     public void iniciar(Partido partido) {
         System.out.println("No se puede reiniciar un partido ya finalizado.");

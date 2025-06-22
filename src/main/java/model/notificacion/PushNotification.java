@@ -1,6 +1,9 @@
 package model.notificacion;
 
-public class PushNotification implements IEstrategiaNotificacion {
+import java.io.Serializable;
+
+public class PushNotification implements IEstrategiaNotificacion, Serializable {
+    private static final long serialVersionUID = 1L;
     private IAdapterPushNotification adapter;
 
     public PushNotification(IAdapterPushNotification adapter) {

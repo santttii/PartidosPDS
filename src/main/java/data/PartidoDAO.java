@@ -1,5 +1,6 @@
 package data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,8 +8,10 @@ import java.util.List;
 import model.partido.Partido;
 import model.partido.Jugador;
 import model.partido.Deporte;
+import util.Serializador;
 
-public class PartidoDAO {
+public class PartidoDAO implements Serializable {
+    private static final String ARCHIVO_PARTIDOS = "partidos";
     private static PartidoDAO instancia; // ← Singleton
     private ArrayList<Partido> partidos;
 
@@ -21,6 +24,18 @@ public class PartidoDAO {
             instancia = new PartidoDAO();
         }
         return instancia;
+    }
+
+    public void guardar() {
+        Serializador.guardarDatos(partidos, ARCHIVO_PARTIDOS);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void cargar() {
+        ArrayList<Partido> cargados = Serializador.cargarDatos(ARCHIVO_PARTIDOS, ArrayList.class);
+        if (cargados != null) {
+            this.partidos = cargados;
+        }
     }
 
     /**

@@ -2,7 +2,8 @@ package model.estado;
 
 import model.partido.Partido;
 
-public class Pendiente implements IEstadoPartido {
+public class Pendiente implements IEstadoPartido, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     @Override
     public void iniciar(Partido partido) {
         System.out.println("No se puede iniciar el partido. Aún está pendiente.");

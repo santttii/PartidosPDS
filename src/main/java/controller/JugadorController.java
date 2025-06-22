@@ -17,7 +17,11 @@ public class JugadorController {
     // Constructor privado para singleton
     private JugadorController() {
         this.gestorJugadores = JugadorDAO.getInstancia();
-        this.gestorPartidos = PartidoDAO.getInstancia();  // asumiendo PartidoDAO también es singleton y tiene getInstancia()
+        this.gestorPartidos = PartidoDAO.getInstancia();
+
+        // ✅ CARGAR DATOS AL INICIALIZAR
+        gestorJugadores.cargar();
+        gestorPartidos.cargar();
     }
 
     public static JugadorController getInstancia() {
@@ -30,11 +34,19 @@ public class JugadorController {
     public JugadorController(PartidoDAO gestorPartidos, JugadorDAO gestorJugadores) {
         this.gestorJugadores = gestorJugadores;
         this.gestorPartidos = gestorPartidos;
+
+        // ✅ CARGAR DATOS AL INICIALIZAR
+        gestorJugadores.cargar();
+        gestorPartidos.cargar();
     }
 
     public JugadorController(JugadorDAO gestorJugadores, PartidoDAO gestorPartidos) {
         this.gestorJugadores = gestorJugadores;
         this.gestorPartidos = gestorPartidos;
+
+        // ✅ CARGAR DATOS AL INICIALIZAR
+        gestorJugadores.cargar();
+        gestorPartidos.cargar();
     }
 
     /**
@@ -67,9 +79,10 @@ public class JugadorController {
                     token
             );
 
-
             if (gestorJugadores.agregarJugador(nuevoJugador)) {
-                System.out.println("Jugador registrado exitosamente: " + username + " dlslaskdkdskas");
+                // ✅ GUARDAR DESPUÉS DE AGREGAR
+                gestorJugadores.guardar();
+                System.out.println("Jugador registrado exitosamente: " + username);
                 return nuevoJugador;
             } else {
                 System.err.println("Error al agregar el jugador al gestor");

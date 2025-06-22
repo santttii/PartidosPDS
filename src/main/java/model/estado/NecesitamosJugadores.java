@@ -2,7 +2,10 @@ package model.estado;
 
 import model.partido.Partido;
 
-public class NecesitamosJugadores implements IEstadoPartido {
+import java.io.Serializable;
+
+public class NecesitamosJugadores implements IEstadoPartido, Serializable {
+    private static final long serialVersionUID = 1L;
     @Override
     public void iniciar(Partido partido) {
         System.out.println("Aún faltan jugadores. No se puede iniciar.");

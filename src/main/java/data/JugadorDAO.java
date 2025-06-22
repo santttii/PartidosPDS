@@ -1,12 +1,15 @@
 package data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import model.partido.Jugador;
 import model.partido.Deporte;
+import util.Serializador;
 
-public class JugadorDAO {
+public class JugadorDAO implements Serializable {
+    private static final String ARCHIVO_JUGADORES = "jugadores";
     private static JugadorDAO instancia; // ← Singleton
     private ArrayList<Jugador> jugadores;
     private static int siguienteId = 1;
@@ -20,6 +23,19 @@ public class JugadorDAO {
         return instancia;
     }
 
+    public void guardar() {
+        Serializador.guardarDatos(jugadores, ARCHIVO_JUGADORES);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void cargar() {
+        ArrayList<Jugador> cargados = Serializador.cargarDatos(ARCHIVO_JUGADORES, ArrayList.class);
+        if (cargados != null) {
+            this.jugadores = cargados;
+            // Recalcular siguienteId si es necesario
+            siguienteId = jugadores.stream().mapToInt(Jugador::getIdJugador).max().orElse(0) + 1;
+        }
+    }
 
     /**
      * Agrega un nuevo jugador a la lista

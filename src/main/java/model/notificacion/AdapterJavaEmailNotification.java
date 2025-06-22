@@ -4,9 +4,12 @@ package model.notificacion;
 import jakarta.mail.*;
 import jakarta.mail.internet.*;
 
+import java.io.Serializable;
 import java.util.Properties;
 
-public class AdapterJavaEmailNotification implements IAdapterEmailNotification{
+public class AdapterJavaEmailNotification implements IAdapterEmailNotification, Serializable {
+    private static final long serialVersionUID = 1L;
+
     // Correo y contraseña del remitente ( mover esto a un archivo config si prefieres)
     private final String remitente = "martinkpce@gmail.com";  // Reemplaza con tu correo real
     private final String password = "wegj gfxt iiyo easy";        // Reemplaza con tu contraseña real

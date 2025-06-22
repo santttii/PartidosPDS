@@ -6,7 +6,10 @@ import util.FirebaseInitializer;
 import com.google.firebase.messaging.AndroidConfig;
 import com.google.firebase.messaging.AndroidNotification;
 
-public class AdapterFirebasePushNotification implements IAdapterPushNotification {
+import java.io.Serializable;
+
+public class AdapterFirebasePushNotification implements IAdapterPushNotification, Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Override
     public void EnviarPushNotification(Notification notification) {

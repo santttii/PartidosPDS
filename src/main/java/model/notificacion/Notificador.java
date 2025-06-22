@@ -1,6 +1,10 @@
 package model.notificacion;
 
-public class Notificador {
+import java.io.Serializable;
+
+public class Notificador implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private IEstrategiaNotificacion estrategia;
 
     public Notificador(IEstrategiaNotificacion estrategia) {
