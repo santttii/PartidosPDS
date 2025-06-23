@@ -8,7 +8,6 @@ import model.emparejamiento.IEstrategiaEmparejamiento;
 import model.estado.Confirmado;
 import model.estado.IEstadoPartido;
 import model.estado.NecesitamosJugadores;
-import model.estado.Pendiente;
 import model.notificacion.IObservable;
 import model.notificacion.IObserver;
 import model.notificacion.Notification;
@@ -115,7 +114,7 @@ public class Partido implements IObservable, Serializable {
 
     // Agregar jugador (con validación por estrategia)
     public void agregarJugador(Jugador jugador) {
-        if (!(estado instanceof Pendiente || estado instanceof NecesitamosJugadores)) {
+        if (!(estado instanceof NecesitamosJugadores)) {
             System.out.println("No se pueden agregar jugadores en este estado (" + estado.getClass().getSimpleName() + ")");
             return;
         }
@@ -141,9 +140,7 @@ public class Partido implements IObservable, Serializable {
     private void verificarYActualizarEstado() {
         int cantidad = jugadores.size();
 
-        if (cantidad == 0) {
-            cambiarEstado(new Pendiente());
-        } else if (cantidad < cupoMaximo) {
+        if (cantidad < cupoMaximo) {
             cambiarEstado(new NecesitamosJugadores());
         } else if (cantidad == cupoMaximo) {
             cambiarEstado(new Confirmado());

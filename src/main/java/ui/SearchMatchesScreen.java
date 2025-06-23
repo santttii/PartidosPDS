@@ -8,10 +8,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.partido.*;
-import ui.CreateMatchScreen;
 
 import java.util.List;
 
@@ -20,6 +20,7 @@ public class SearchMatchesScreen {
     private final PartidoController partidoController;
     private final Jugador jugadorActual;
     private ListView<Partido> partidosListView;
+    private ListView<Partido> misPartidosListView;
     private Label resultadosLabel;
 
     public SearchMatchesScreen(Stage stage, Jugador jugadorActual) {
@@ -29,32 +30,90 @@ public class SearchMatchesScreen {
     }
 
     public void show() {
-        VBox mainLayout = new VBox(15);
+        // Layout principal horizontal
+        HBox mainLayout = new HBox(20);
         mainLayout.setPadding(new Insets(20));
-        mainLayout.setAlignment(Pos.TOP_CENTER);
 
-        // Título
+        // Panel izquierdo (búsqueda)
+        VBox leftPanel = new VBox(15);
+        leftPanel.setPrefWidth(600);
+
+        // Panel derecho (mis partidos)
+        VBox rightPanel = new VBox(15);
+        rightPanel.setPrefWidth(300);
+        rightPanel.setStyle("-fx-border-color: lightgray; -fx-border-width: 0 0 0 1; -fx-padding: 0 0 0 15;");
+
+        // Configurar panel izquierdo
         Label titleLabel = new Label("Buscar Partidos");
         titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
 
-        // Panel de filtros
         VBox filtrosPanel = crearPanelFiltros();
-
-        // Lista de resultados
         VBox resultadosPanel = crearPanelResultados();
-
-        // Botones de acción
         HBox botonesPanel = crearPanelBotones();
 
-        mainLayout.getChildren().addAll(titleLabel, filtrosPanel, resultadosPanel, botonesPanel);
+        leftPanel.getChildren().addAll(titleLabel, filtrosPanel, resultadosPanel, botonesPanel);
+        VBox.setVgrow(resultadosPanel, Priority.ALWAYS);
 
-        // Cargar partidos disponibles por defecto
+        // Configurar panel derecho
+        Label misPartidosTitle = new Label("Mis Partidos");
+        misPartidosTitle.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+
+        misPartidosListView = new ListView<>();
+        misPartidosListView.setPrefHeight(400);
+        misPartidosListView.setCellFactory(lv -> new PartidoListCell());
+        VBox.setVgrow(misPartidosListView, Priority.ALWAYS);
+
+        Button refreshButton = new Button("Actualizar Mis Partidos");
+        refreshButton.setOnAction(e -> cargarMisPartidos());
+
+        rightPanel.getChildren().addAll(misPartidosTitle, misPartidosListView, refreshButton);
+
+        // Agregar paneles al layout principal
+        mainLayout.getChildren().addAll(leftPanel, rightPanel);
+        HBox.setHgrow(leftPanel, Priority.ALWAYS);
+
+        // Cargar datos iniciales
         cargarPartidosDisponibles();
+        cargarMisPartidos();
 
-        Scene scene = new Scene(new ScrollPane(mainLayout), 800, 600);
+        // Crear y mostrar la escena
+        ScrollPane scrollPane = new ScrollPane(mainLayout);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+
+        Scene scene = new Scene(scrollPane, 1000, 600);
         stage.setScene(scene);
         stage.setTitle("Buscar Partidos");
         stage.show();
+    }
+
+    private void cargarMisPartidos() {
+        if (jugadorActual != null) {
+            List<Partido> misPartidos = partidoController.buscarPartidosPorJugador(jugadorActual);
+            ObservableList<Partido> observableMisPartidos = FXCollections.observableArrayList(misPartidos);
+            misPartidosListView.setItems(observableMisPartidos);
+
+            if (misPartidos.isEmpty()) {
+                misPartidosListView.setPlaceholder(new Label("No estás participando en ningún partido"));
+            }
+        }
+    }
+
+    // ... resto de los métodos existentes ...
+
+    // Asegúrate de actualizar ambas listas cuando te unes a un partido
+    private void unirseAPartido(Partido partido) {
+        try {
+            if (partidoController.agregarJugadorAPartido(partido, jugadorActual)) {
+                mostrarAlerta("¡Te has unido al partido exitosamente!", Alert.AlertType.INFORMATION);
+                cargarPartidosDisponibles();
+                cargarMisPartidos(); // Actualizar la lista de mis partidos
+            } else {
+                mostrarAlerta("No se pudo unir al partido. Verifica si cumples los requisitos.", Alert.AlertType.ERROR);
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error al unirse al partido: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     private VBox crearPanelFiltros() {
@@ -68,9 +127,9 @@ public class SearchMatchesScreen {
         Label deporteLabel = new Label("Deporte:");
         ComboBox<Deporte> deporteCombo = new ComboBox<>();
         deporteCombo.getItems().addAll(
-                new Futbol("Fútbol", 11, "Partido de fútbol clásico"),
-                new Basquet("Básquet", 5, "Partido de básquet profesional"),
-                new Voley("Vóley", 6, "Partido de vóley de cancha")
+                Futbol.getInstancia(),
+                Basquet.getInstancia(),
+                Voley.getInstancia()
         );
         deporteCombo.setPromptText("Seleccionar deporte (opcional)");
         deporteCombo.setMaxWidth(Double.MAX_VALUE);
@@ -84,7 +143,6 @@ public class SearchMatchesScreen {
         Label estadoLabel = new Label("Estado:");
         ComboBox<String> estadoCombo = new ComboBox<>();
         estadoCombo.getItems().addAll(
-                "Pendiente",
                 "NecesitamosJugadores",
                 "Confirmado",
                 "Finalizado",
@@ -243,20 +301,6 @@ public class SearchMatchesScreen {
 
         if (partidos.isEmpty()) {
             partidosListView.setPlaceholder(new Label("No se encontraron partidos con los criterios especificados"));
-        }
-    }
-
-    private void unirseAPartido(Partido partido) {
-        try {
-            if (partidoController.agregarJugadorAPartido(partido, jugadorActual)) {
-                mostrarAlerta("¡Te has unido al partido exitosamente!", Alert.AlertType.INFORMATION);
-                // Refrescar la lista
-                cargarPartidosDisponibles();
-            } else {
-                mostrarAlerta("No se pudo unir al partido. Verifica si cumples los requisitos.", Alert.AlertType.ERROR);
-            }
-        } catch (Exception e) {
-            mostrarAlerta("Error al unirse al partido: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 

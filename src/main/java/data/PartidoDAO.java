@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import model.partido.Partido;
-import model.partido.Jugador;
-import model.partido.Deporte;
+import model.partido.*;
 import util.Serializador;
 
 public class PartidoDAO implements Serializable {
@@ -66,13 +64,16 @@ public class PartidoDAO implements Serializable {
         }
 
         for (Partido partido : partidos) {
-            if (partido.getDeporte().equals(deporte)) {
+            if (partido.getDeporte() instanceof Futbol && deporte instanceof Futbol ||
+                    partido.getDeporte() instanceof Basquet && deporte instanceof Basquet ||
+                    partido.getDeporte() instanceof Voley && deporte instanceof Voley) {
                 resultado.add(partido);
             }
         }
 
         return resultado;
     }
+
 
     /**
      * Busca partidos por ubicación (búsqueda parcial)
@@ -114,14 +115,14 @@ public class PartidoDAO implements Serializable {
     }
 
     /**
-     * Busca partidos disponibles (Pendiente o NecesitamosJugadores)
+     * Busca partidos disponibles ( o NecesitamosJugadores)
      */
     public List<Partido> buscarDisponibles() {
         List<Partido> resultado = new ArrayList<>();
 
         for (Partido partido : partidos) {
             String estado = partido.getNombreEstado();
-            if ("Pendiente".equals(estado) || "NecesitamosJugadores".equals(estado)) {
+            if ("NecesitamosJugadores".equals(estado)) {
                 resultado.add(partido);
             }
         }
@@ -149,9 +150,6 @@ public class PartidoDAO implements Serializable {
         return resultado;
     }
 
-    /**
-     * Busca partidos donde participa un jugador específico
-     */
     public List<Partido> buscarPorJugador(Jugador jugador) {
         List<Partido> resultado = new ArrayList<>();
 
@@ -160,11 +158,17 @@ public class PartidoDAO implements Serializable {
         }
 
         for (Partido partido : partidos) {
-            if (partido.getJugadores().contains(jugador)) {
-                resultado.add(partido);
+            for (Jugador j : partido.getJugadores()) {
+                if (j.getUsername().equals(jugador.getUsername())) {
+                    resultado.add(partido);
+                    break;  // Si encontramos al jugador, no necesitamos seguir buscando en este partido
+                }
             }
         }
 
+        System.out.println("Buscando partidos para jugador: " + jugador.getUsername());
+        System.out.println("Partidos encontrados: " + resultado.size());
+        
         return resultado;
     }
 
@@ -270,9 +274,6 @@ public class PartidoDAO implements Serializable {
         for (Partido partido : partidos) {
             String estado = partido.getNombreEstado();
             switch (estado) {
-                case "Pendiente":
-                    pendientes++;
-                    break;
                 case "NecesitamosJugadores":
                     necesitanJugadores++;
                     break;

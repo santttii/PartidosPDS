@@ -6,8 +6,10 @@ import model.notificacion.Notificador;
 import model.notificacion.Notification;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Jugador implements IObserver, Serializable {
+    private static final long serialVersionUID = 1;
 
     public enum NivelJugador {
         PRINCIPIANTE,

@@ -44,9 +44,9 @@ public class RegisterScreen {
 
         ComboBox<Deporte> deporteBox = new ComboBox<>();
         deporteBox.getItems().addAll(
-                new Futbol("Fútbol", 11, "Partido de fútbol clásico"),
-                new Basquet("Básquet", 5, "Partido de básquet profesional"),
-                new Voley("Vóley", 6, "Partido de vóley de cancha")
+                Futbol.getInstancia(),
+                Basquet.getInstancia(),
+                Voley.getInstancia()
         );
         deporteBox.setPromptText("Deporte");
 

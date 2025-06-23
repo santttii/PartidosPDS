@@ -1,8 +1,24 @@
 package model.partido;
 
-public class Voley extends Deporte {
+import java.io.Serializable;
 
-    public Voley(String nombre, int cantidadJugadores, String descripcion) {
-        super(nombre, cantidadJugadores, descripcion);
+public class Voley extends Deporte implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private static Voley instancia;
+    
+    private Voley() {
+        super("Vóley", 6, "Partido de vóley de cancha");
+    }
+    
+    public static Voley getInstancia() {
+        if (instancia == null) {
+            instancia = new Voley();
+        }
+        return instancia;
+    }
+    
+    // Necesario para la serialización
+    protected Object readResolve() {
+        return getInstancia();
     }
 }

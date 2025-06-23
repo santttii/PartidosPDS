@@ -1,4 +1,3 @@
-
 package ui;
 
 import controller.PartidoController;
@@ -11,7 +10,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.emparejamiento.*;
-import model.estado.Pendiente;
 import model.partido.*;
 
 import java.time.LocalDateTime;
@@ -30,6 +28,7 @@ public class CreateMatchScreen {
     }
 
     public void show() {
+
         VBox mainLayout = new VBox(15);
         mainLayout.setPadding(new Insets(20));
         mainLayout.setAlignment(Pos.TOP_CENTER);
@@ -47,6 +46,14 @@ public class CreateMatchScreen {
         stage.setScene(scene);
         stage.setTitle("Crear Partido");
         stage.show();
+        // Mejorar el debug para ver más información del jugador
+        if (jugadorActual != null) {
+            System.out.println("Jugador actual en CreateMatchScreen: " + 
+                              jugadorActual.getUsername() + 
+                              " (Nivel: " + jugadorActual.getNivel() + ")");
+        } else {
+            System.out.println("¡Advertencia! jugadorActual es null en CreateMatchScreen");
+        }
     }
 
     private GridPane createForm() {
@@ -59,9 +66,9 @@ public class CreateMatchScreen {
         Label deporteLabel = new Label("Deporte:");
         ComboBox<Deporte> deporteCombo = new ComboBox<>();
         deporteCombo.getItems().addAll(
-                new Futbol("Fútbol", 11, "Partido de fútbol clásico"),
-                new Basquet("Básquet", 5, "Partido de básquet profesional"),
-                new Voley("Vóley", 6, "Partido de vóley de cancha")
+                Futbol.getInstancia(),
+                Basquet.getInstancia(),
+                Voley.getInstancia()
         );
         deporteCombo.setPromptText("Seleccionar deporte");
 
@@ -86,14 +93,52 @@ public class CreateMatchScreen {
         Label duracionLabel = new Label("Duración (horas):");
         Spinner<Double> duracionSpinner = new Spinner<>(0.5, 4.0, 1.5, 0.5);
 
-        // Estrategia de emparejamiento
+        // En CreateMatchScreen.java, en la parte de configuración de estrategia
+
         Label estrategiaLabel = new Label("Estrategia de emparejamiento:");
         ComboBox<String> estrategiaCombo = new ComboBox<>();
         estrategiaCombo.getItems().addAll(
-                "Por nivel",
-                "Por cantidad de partidos",
-                "Libre"
+            "Cualquier nivel",
+            "Nivel específico",
+            "Rango de nivel",
+            "Por cantidad de partidos",
+            "Por ubicación"
         );
+
+        // Panel para configuración de niveles
+        VBox nivelesPanel = new VBox(10);
+
+        // Para nivel específico
+        ComboBox<Jugador.NivelJugador> nivelEspecificoCombo = new ComboBox<>();
+        nivelEspecificoCombo.getItems().addAll(Jugador.NivelJugador.values());
+        nivelEspecificoCombo.setPromptText("Seleccione nivel");
+
+        // Para rango de niveles
+        Label nivelMinLabel = new Label("Nivel mínimo:");
+        ComboBox<Jugador.NivelJugador> nivelMinCombo = new ComboBox<>();
+        nivelMinCombo.getItems().addAll(Jugador.NivelJugador.values());
+
+        Label nivelMaxLabel = new Label("Nivel máximo:");
+        ComboBox<Jugador.NivelJugador> nivelMaxCombo = new ComboBox<>();
+        nivelMaxCombo.getItems().addAll(Jugador.NivelJugador.values());
+
+        nivelesPanel.getChildren().addAll(
+            nivelEspecificoCombo,
+            nivelMinLabel, nivelMinCombo,
+            nivelMaxLabel, nivelMaxCombo
+        );
+        nivelesPanel.setVisible(false);
+
+        // Mostrar/ocultar controles según la estrategia seleccionada
+        estrategiaCombo.setOnAction(e -> {
+            String seleccion = estrategiaCombo.getValue();
+            nivelEspecificoCombo.setVisible(seleccion.equals("Nivel específico"));
+            nivelMinLabel.setVisible(seleccion.equals("Rango de nivel"));
+            nivelMinCombo.setVisible(seleccion.equals("Rango de nivel"));
+            nivelMaxLabel.setVisible(seleccion.equals("Rango de nivel"));
+            nivelMaxCombo.setVisible(seleccion.equals("Rango de nivel"));
+            nivelesPanel.setVisible(seleccion.equals("Nivel específico") || seleccion.equals("Rango de nivel"));
+        });
 
         // Botones
         Button crearBtn = new Button("Crear Partido");
@@ -114,7 +159,8 @@ public class CreateMatchScreen {
         form.add(duracionSpinner, 1, 4);
         form.add(estrategiaLabel, 0, 5);
         form.add(estrategiaCombo, 1, 5);
-        form.add(botonesBox, 1, 6);
+        form.add(nivelesPanel, 1, 6); // Coloca el panel de niveles
+        form.add(botonesBox, 1, 7);
 
         // Eventos
         crearBtn.setOnAction(e -> {
@@ -134,10 +180,33 @@ public class CreateMatchScreen {
                 );
                 Date fecha = Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
 
+                // En la parte de creación del partido:
                 IEstrategiaEmparejamiento estrategia;
                 switch (estrategiaCombo.getValue()) {
-                    case "Por nivel":
-                        estrategia = new EmparejamientoPorNivel(Jugador.NivelJugador.AVANZADO);
+                    case "Cualquier nivel":
+                        estrategia = new EmparejamientoPorNivel();
+                        break;
+                    case "Nivel específico":
+                        if (nivelEspecificoCombo.getValue() == null) {
+                            mostrarError("Debe seleccionar un nivel");
+                            return;
+                        }
+                        estrategia = new EmparejamientoPorNivel(nivelEspecificoCombo.getValue());
+                        break;
+                    case "Rango de nivel":
+                        if (nivelMinCombo.getValue() == null || nivelMaxCombo.getValue() == null) {
+                            mostrarError("Debe seleccionar niveles mínimo y máximo");
+                            return;
+                        }
+                        try {
+                            estrategia = new EmparejamientoPorNivel(
+                                nivelMinCombo.getValue(),
+                                nivelMaxCombo.getValue()
+                            );
+                        } catch (IllegalArgumentException ex) {
+                            mostrarError(ex.getMessage());
+                            return;
+                        }
                         break;
                     case "Por cantidad de partidos":
                         estrategia = new EmparejamientoPorHistorial(0);
@@ -153,12 +222,14 @@ public class CreateMatchScreen {
                         ubicacionField.getText(),
                         fecha,
                         duracionSpinner.getValue(),
-                        estrategia
+                        estrategia,
+                        jugadorActual  // Agregamos el jugador actual como creador
                 );
 
                 if (nuevoPartido != null) {
                     mostrarExito("Partido creado exitosamente");
-                    stage.close();
+                    // Redirigir a SearchMatchesScreen
+                    new SearchMatchesScreen(stage, jugadorActual).show();
                 } else {
                     mostrarError("Error al crear el partido");
                 }

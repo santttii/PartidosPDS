@@ -1,15 +1,16 @@
 package controller;
 
+import model.emparejamiento.EmparejamientoPorNivel;
+import model.emparejamiento.IEstrategiaEmparejamiento;
+import model.estado.NecesitamosJugadores;
+import model.estado.IEstadoPartido;
+import model.partido.Deporte;
+import model.partido.Jugador;
+import model.partido.Partido;
+import data.PartidoDAO;
+
 import java.util.Date;
 import java.util.List;
-
-import model.partido.Partido;
-import model.partido.Jugador;
-import model.partido.Deporte;
-import model.emparejamiento.IEstrategiaEmparejamiento;
-import model.estado.IEstadoPartido;
-import model.estado.Pendiente;
-import data.PartidoDAO;
 
 public class PartidoController {
 
@@ -26,29 +27,36 @@ public class PartidoController {
     }
 
     public Partido crearPartido(int cupoMaximo, Deporte deporte, String ubicacion,
-                                Date horario, double duracion, IEstrategiaEmparejamiento emparejamiento) {
-        try {
-            validarParametrosPartido(cupoMaximo, deporte, ubicacion, horario, duracion, emparejamiento);
-            IEstadoPartido estadoInicial = new Pendiente();
+                          Date horario, double duracion, IEstrategiaEmparejamiento emparejamiento,
+                          Jugador creador) {
+    try {
+        validarParametrosPartido(cupoMaximo, deporte, ubicacion, horario, duracion, emparejamiento);
+        if (creador == null) {
+            throw new IllegalArgumentException("El creador del partido no puede ser nulo");
+        }
 
-            Partido nuevoPartido = new Partido(cupoMaximo, deporte, ubicacion,
-                    horario, duracion, estadoInicial, emparejamiento);
+        IEstadoPartido estadoInicial = new NecesitamosJugadores();
+        Partido nuevoPartido = new Partido(cupoMaximo, deporte, ubicacion,
+                horario, duracion, estadoInicial, emparejamiento);
 
-            if (gestorPartidos.agregarPartido(nuevoPartido)) {
-                // ✅ GUARDAR DESPUÉS DE CREAR
-                gestorPartidos.guardar();
-                System.out.println("Partido creado exitosamente en " + ubicacion + " para " + horario);
-                return nuevoPartido;
-            } else {
-                System.err.println("Error al agregar el partido al gestor");
-                return null;
-            }
+        // Agregar al creador como primer jugador
+        nuevoPartido.agregarJugador(creador);
 
-        } catch (Exception e) {
-            System.err.println("Error al crear partido: " + e.getMessage());
+        if (gestorPartidos.agregarPartido(nuevoPartido)) {
+            gestorPartidos.guardar();
+            System.out.println("Partido creado exitosamente en " + ubicacion + " para " + horario);
+            return nuevoPartido;
+        } else {
+            System.err.println("Error al agregar el partido al gestor");
             return null;
         }
+
+    } catch (Exception e) {
+        System.err.println("Error al crear partido: " + e.getMessage());
+        e.printStackTrace();
+        return null;
     }
+}
 
     public boolean agregarJugadorAPartido(Partido partido, Jugador jugador) {
         try {
@@ -184,14 +192,22 @@ public class PartidoController {
                 .append("Ubicación: ").append(partido.getUbicacion()).append("\n")
                 .append("Horario: ").append(partido.getHorario()).append("\n")
                 .append("Duración: ").append(partido.getDuracion()).append(" horas\n")
-                .append("Estado: ").append(partido.getNombreEstado()).append("\n")
-                .append("Jugadores: ").append(partido.getJugadores().size()).append("/")
+                .append("Estado: ").append(partido.getNombreEstado()).append("\n");
+
+        // Agregar información sobre requisitos de nivel
+        IEstrategiaEmparejamiento estrategia = partido.getEmparejamiento();
+        if (estrategia instanceof EmparejamientoPorNivel) {
+            info.append("Requisitos de nivel: ").append(estrategia.toString()).append("\n");
+        }
+
+        info.append("Jugadores: ").append(partido.getJugadores().size()).append("/")
                 .append(partido.getCupoMaximo()).append("\n");
 
         if (!partido.getJugadores().isEmpty()) {
             info.append("Lista de jugadores:\n");
             for (Jugador jugador : partido.getJugadores()) {
-                info.append("  - ").append(jugador.getUsername()).append(" (").append(jugador.getNivel()).append(")\n");
+                info.append("  - ").append(jugador.getUsername())
+                .append(" (").append(jugador.getNivel()).append(")\n");
             }
         }
 
