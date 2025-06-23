@@ -17,13 +17,11 @@ public class PartidoController {
 
     public PartidoController() {
         this.gestorPartidos = PartidoDAO.getInstancia();
-        // ✅ CARGAR DATOS AL INICIALIZAR
         gestorPartidos.cargar();
     }
 
     public PartidoController(PartidoDAO gestorPartidos) {
         this.gestorPartidos = gestorPartidos;
-        // ✅ CARGAR DATOS AL INICIALIZAR
         gestorPartidos.cargar();
     }
 

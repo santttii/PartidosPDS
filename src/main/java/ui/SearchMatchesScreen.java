@@ -11,6 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.partido.*;
+import ui.CreateMatchScreen;
 
 import java.util.List;
 
@@ -151,6 +152,12 @@ public class SearchMatchesScreen {
         HBox panel = new HBox(15);
         panel.setAlignment(Pos.CENTER);
 
+        Button crearPartidoBtn = new Button("Crear Partido");
+        crearPartidoBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px;");
+        crearPartidoBtn.setOnAction(e -> {
+            new CreateMatchScreen(stage, jugadorActual).show();
+        });
+
         Button unirseBtn = new Button("Unirse al Partido");
         unirseBtn.setStyle("-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-size: 14px;");
         unirseBtn.setOnAction(e -> {
@@ -178,7 +185,7 @@ public class SearchMatchesScreen {
             stage.close();
         });
 
-        panel.getChildren().addAll(unirseBtn, verDetallesBtn, volverBtn);
+        panel.getChildren().addAll(crearPartidoBtn, unirseBtn, verDetallesBtn, volverBtn);
         return panel;
     }
 
