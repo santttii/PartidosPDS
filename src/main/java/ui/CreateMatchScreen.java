@@ -76,9 +76,7 @@ public class CreateMatchScreen {
         Label ubicacionLabel = new Label("Ubicación:");
         TextField ubicacionField = new TextField();
 
-        // Cupo máximo
-        Label cupoLabel = new Label("Cupo máximo:");
-        Spinner<Integer> cupoSpinner = new Spinner<>(2, 22, 10);
+        // *** REMOVIDO: Cupo máximo - ya no se muestra en la interfaz ***
 
         // Fecha y hora
         Label fechaLabel = new Label("Fecha y hora:");
@@ -146,21 +144,20 @@ public class CreateMatchScreen {
         Button cancelarBtn = new Button("Cancelar");
         HBox botonesBox = new HBox(10, crearBtn, cancelarBtn);
 
-        // Agregar elementos al form
+        // Agregar elementos al form (sin el cupo máximo)
         form.add(deporteLabel, 0, 0);
         form.add(deporteCombo, 1, 0);
         form.add(ubicacionLabel, 0, 1);
         form.add(ubicacionField, 1, 1);
-        form.add(cupoLabel, 0, 2);
-        form.add(cupoSpinner, 1, 2);
-        form.add(fechaLabel, 0, 3);
-        form.add(dateTimeBox, 1, 3);
-        form.add(duracionLabel, 0, 4);
-        form.add(duracionSpinner, 1, 4);
-        form.add(estrategiaLabel, 0, 5);
-        form.add(estrategiaCombo, 1, 5);
-        form.add(nivelesPanel, 1, 6); // Coloca el panel de niveles
-        form.add(botonesBox, 1, 7);
+        // *** REMOVIDO: cupoLabel y cupoSpinner ***
+        form.add(fechaLabel, 0, 2);      // Cambió de fila 3 a 2
+        form.add(dateTimeBox, 1, 2);     // Cambió de fila 3 a 2
+        form.add(duracionLabel, 0, 3);   // Cambió de fila 4 a 3
+        form.add(duracionSpinner, 1, 3); // Cambió de fila 4 a 3
+        form.add(estrategiaLabel, 0, 4); // Cambió de fila 5 a 4
+        form.add(estrategiaCombo, 1, 4); // Cambió de fila 5 a 4
+        form.add(nivelesPanel, 1, 5);    // Cambió de fila 6 a 5
+        form.add(botonesBox, 1, 6);      // Cambió de fila 7 a 6
 
         // Eventos
         crearBtn.setOnAction(e -> {
@@ -215,9 +212,14 @@ public class CreateMatchScreen {
                         estrategia = new EmparejamientoPorCercania("");
                 }
 
+                // *** CAMBIO PRINCIPAL: Obtener cupo máximo del deporte seleccionado ***
+                int cupoMaximo = deporteCombo.getValue().getCantidadJugadores();
+                System.out.println("Cupo máximo establecido automáticamente: " + cupoMaximo + 
+                                 " para " + deporteCombo.getValue().getNombre());
+
                 // Crear partido
                 Partido nuevoPartido = partidoController.crearPartido(
-                        cupoSpinner.getValue(),
+                        cupoMaximo,                  // Usar el cupo del deporte
                         deporteCombo.getValue(),
                         ubicacionField.getText(),
                         fecha,

@@ -58,6 +58,21 @@ public class PartidoController {
     }
 }
 
+    // Agregar este método después del método crearPartido existente
+
+    /**
+     * Método sobrecargado que automáticamente usa la cantidad de jugadores del deporte
+     * como cupo máximo
+     */
+    public Partido crearPartido(Deporte deporte, String ubicacion,
+                          Date horario, double duracion, IEstrategiaEmparejamiento emparejamiento,
+                          Jugador creador) {
+        int cupoMaximo = deporte.getCantidadJugadores();
+        System.out.println("Creando partido con cupo automático: " + cupoMaximo +
+                         " jugadores para " + deporte.getNombre());
+
+        return crearPartido(cupoMaximo, deporte, ubicacion, horario, duracion, emparejamiento, creador);
+    }
     public boolean agregarJugadorAPartido(Partido partido, Jugador jugador) {
         try {
             if (partido == null || jugador == null) {
