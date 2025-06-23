@@ -60,7 +60,7 @@ public class SearchMatchesScreen {
 
         misPartidosListView = new ListView<>();
         misPartidosListView.setPrefHeight(400);
-        misPartidosListView.setCellFactory(lv -> new PartidoListCell());
+        misPartidosListView.setCellFactory(lv -> new MisPartidosListCell(jugadorActual,partidoController));
         VBox.setVgrow(misPartidosListView, Priority.ALWAYS);
 
         Button refreshButton = new Button("Actualizar Mis Partidos");
@@ -326,7 +326,6 @@ public class SearchMatchesScreen {
         @Override
         protected void updateItem(Partido partido, boolean empty) {
             super.updateItem(partido, empty);
-
             if (empty || partido == null) {
                 setText(null);
                 setGraphic(null);
@@ -334,24 +333,76 @@ public class SearchMatchesScreen {
                 VBox content = new VBox(5);
                 content.setPadding(new Insets(8));
 
-                Label mainInfo = new Label(String.format("%s - %s",
-                        partido.getDeporte(),
-                        partido.getUbicacion()));
-                mainInfo.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+                Label mainInfo = new Label(partido.getDeporte() + " - " + partido.getUbicacion());
+                mainInfo.setStyle("-fx-font-weight: bold;");
 
-                Label timeInfo = new Label("Fecha: " + partido.getHorario());
-                timeInfo.setStyle("-fx-font-size: 12px;");
+                Label fecha = new Label("Fecha: " + partido.getHorario());
+                Label estado = new Label("Estado: " + partido.getNombreEstado());
 
-                Label statusInfo = new Label(String.format("Estado: %s | Jugadores: %d/%d",
-                        partido.getNombreEstado(),
-                        partido.getJugadores().size(),
-                        partido.getCupoMaximo()));
-                statusInfo.setStyle("-fx-font-size: 12px; -fx-text-fill: gray;");
+                content.getChildren().addAll(mainInfo, fecha, estado);
+                setGraphic(content);
+            }
+        }
+    }
+    private class MisPartidosListCell extends ListCell<Partido> {
+        private final Jugador jugadorActual;
 
-                content.getChildren().addAll(mainInfo, timeInfo, statusInfo);
+        // Necesitamos acceso al PartidoController para cancelar el partido
+        private final PartidoController partidoController;
+
+        // Constructor modificado para recibir el PartidoController
+        public MisPartidosListCell(Jugador jugadorActual, PartidoController partidoController) {
+            this.jugadorActual = jugadorActual;
+            this.partidoController = partidoController; // Inicializar el controlador
+        }
+
+        @Override
+        protected void updateItem(Partido partido, boolean empty) {
+            super.updateItem(partido, empty);
+            if (empty || partido == null) {
+                setText(null);
+                setGraphic(null);
+            } else {
+                VBox content = new VBox(5);
+                content.setPadding(new Insets(8));
+
+                Label info = new Label(partido.getDeporte() + " - " + partido.getUbicacion());
+                info.setStyle("-fx-font-weight: bold;");
+
+                Label fecha = new Label("Fecha: " + partido.getHorario());
+                Label estado = new Label("Estado: " + partido.getNombreEstado());
+
+                content.getChildren().addAll(info, fecha, estado);
+
+                //  Corrección clave: Comparación por ID del jugador
+                if (partido.getCreador() != null && jugadorActual.getIdJugador() == partido.getCreador().getIdJugador()) {
+                    Button cancelarBtn = new Button("Cancelar");
+                    cancelarBtn.setStyle("-fx-background-color: #f44336; -fx-text-fill: white;");
+                    cancelarBtn.setOnAction(e -> {
+                        boolean confirmar = confirmarCancelacion(partido);
+                        if (confirmar) {
+                            partidoController.cancelarPartido(partido);
+                            cargarMisPartidos(); // Recargar la lista después de cancelar
+                            mostrarAlerta("Partido cancelado correctamente.", Alert.AlertType.INFORMATION);
+                        }
+                    });
+
+                    VBox.setMargin(cancelarBtn, new Insets(5, 0, 0, 0));
+                    content.getChildren().add(cancelarBtn);
+                }
+
                 setGraphic(content);
                 setText(null);
             }
+
         }
+        private boolean confirmarCancelacion(Partido partido) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmar cancelación");
+            alert.setHeaderText("¿Estás seguro que querés cancelar este partido?");
+            alert.setContentText("Ubicación: " + partido.getUbicacion() + "\nFecha: " + partido.getHorario());
+            return alert.showAndWait().filter(response -> response == ButtonType.OK).isPresent();
+        }
+
     }
 }

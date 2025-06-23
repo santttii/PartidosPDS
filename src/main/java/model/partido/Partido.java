@@ -1,9 +1,9 @@
 package model.partido;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-import model.partido.Jugador;
 import model.emparejamiento.IEstrategiaEmparejamiento;
 import model.estado.Confirmado;
 import model.estado.IEstadoPartido;
@@ -27,9 +27,11 @@ public class Partido implements IObservable, Serializable {
     private double duracion;
     private IEstadoPartido estado;
     private IEstrategiaEmparejamiento emparejamiento;
-
     private ArrayList<Jugador> jugadores;
     private ArrayList<IObserver> jugadoresObserver;
+
+    // ✅ NUEVO: Creador del partido
+    private Jugador creador;
 
     public Partido(int cupoMaximo, Deporte deporte, String ubicacion, Date horario, double duracion,
                    IEstadoPartido estado, IEstrategiaEmparejamiento emparejamiento) {
@@ -49,7 +51,6 @@ public class Partido implements IObservable, Serializable {
     public int getCupoMaximo() {
         return cupoMaximo;
     }
-
 
     public Deporte getDeporte() {
         return deporte;
@@ -107,6 +108,15 @@ public class Partido implements IObservable, Serializable {
         return jugadoresObserver;
     }
 
+    // ✅ Getter y Setter del Creador
+    public Jugador getCreador() {
+        return creador;
+    }
+
+    public void setCreador(Jugador creador) {
+        this.creador = creador;
+    }
+
     // Método para validar si un jugador es apto según la estrategia
     public boolean esApto(Jugador jugador) {
         return emparejamiento.esApto(jugador, this);
@@ -149,7 +159,6 @@ public class Partido implements IObservable, Serializable {
         }
     }
 
-
     public void eliminarJugador(Jugador jugador) {
         if (jugadores.remove(jugador)) {
             jugadoresObserver.remove(jugador);
@@ -163,8 +172,6 @@ public class Partido implements IObservable, Serializable {
     public String getNombreEstado() {
         return estado.getClass().getSimpleName();
     }
-
-
 
     // Métodos del patrón Observer
 
@@ -191,10 +198,8 @@ public class Partido implements IObservable, Serializable {
     public void cambiarEstado(IEstadoPartido nuevoEstado) {
         System.out.println("Transición de estado: " + this.getNombreEstado() + " → " + nuevoEstado.getClass().getSimpleName());
         this.estado = nuevoEstado;
-
         notificar();
     }
-
 
     public void cambiarEstrategia(IEstrategiaEmparejamiento nuevaEstrategia) {
         this.emparejamiento = nuevaEstrategia;
@@ -213,5 +218,4 @@ public class Partido implements IObservable, Serializable {
     public void cancelarPartido() {
         estado.cancelar(this);
     }
-
 }

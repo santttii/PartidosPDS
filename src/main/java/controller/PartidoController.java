@@ -27,52 +27,49 @@ public class PartidoController {
     }
 
     public Partido crearPartido(int cupoMaximo, Deporte deporte, String ubicacion,
-                          Date horario, double duracion, IEstrategiaEmparejamiento emparejamiento,
-                          Jugador creador) {
-    try {
-        validarParametrosPartido(cupoMaximo, deporte, ubicacion, horario, duracion, emparejamiento);
-        if (creador == null) {
-            throw new IllegalArgumentException("El creador del partido no puede ser nulo");
-        }
+                                Date horario, double duracion, IEstrategiaEmparejamiento emparejamiento,
+                                Jugador creador) {
+        try {
+            validarParametrosPartido(cupoMaximo, deporte, ubicacion, horario, duracion, emparejamiento);
+            if (creador == null) {
+                throw new IllegalArgumentException("El creador del partido no puede ser nulo");
+            }
 
-        IEstadoPartido estadoInicial = new NecesitamosJugadores();
-        Partido nuevoPartido = new Partido(cupoMaximo, deporte, ubicacion,
-                horario, duracion, estadoInicial, emparejamiento);
+            IEstadoPartido estadoInicial = new NecesitamosJugadores();
+            Partido nuevoPartido = new Partido(cupoMaximo, deporte, ubicacion,
+                    horario, duracion, estadoInicial, emparejamiento);
 
-        // Agregar al creador como primer jugador
-        nuevoPartido.agregarJugador(creador);
+            nuevoPartido.setCreador(creador); // ✅ ASIGNACIÓN DEL CREADOR
 
-        if (gestorPartidos.agregarPartido(nuevoPartido)) {
-            gestorPartidos.guardar();
-            System.out.println("Partido creado exitosamente en " + ubicacion + " para " + horario);
-            return nuevoPartido;
-        } else {
-            System.err.println("Error al agregar el partido al gestor");
+            // Agregar al creador como primer jugador
+            nuevoPartido.agregarJugador(creador);
+
+            if (gestorPartidos.agregarPartido(nuevoPartido)) {
+                gestorPartidos.guardar();
+                System.out.println("Partido creado exitosamente en " + ubicacion + " para " + horario);
+                return nuevoPartido;
+            } else {
+                System.err.println("Error al agregar el partido al gestor");
+                return null;
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error al crear partido: " + e.getMessage());
+            e.printStackTrace();
             return null;
         }
-
-    } catch (Exception e) {
-        System.err.println("Error al crear partido: " + e.getMessage());
-        e.printStackTrace();
-        return null;
     }
-}
 
-    // Agregar este método después del método crearPartido existente
-
-    /**
-     * Método sobrecargado que automáticamente usa la cantidad de jugadores del deporte
-     * como cupo máximo
-     */
     public Partido crearPartido(Deporte deporte, String ubicacion,
-                          Date horario, double duracion, IEstrategiaEmparejamiento emparejamiento,
-                          Jugador creador) {
+                                Date horario, double duracion, IEstrategiaEmparejamiento emparejamiento,
+                                Jugador creador) {
         int cupoMaximo = deporte.getCantidadJugadores();
         System.out.println("Creando partido con cupo automático: " + cupoMaximo +
-                         " jugadores para " + deporte.getNombre());
+                " jugadores para " + deporte.getNombre());
 
         return crearPartido(cupoMaximo, deporte, ubicacion, horario, duracion, emparejamiento, creador);
     }
+
     public boolean agregarJugadorAPartido(Partido partido, Jugador jugador) {
         try {
             if (partido == null || jugador == null) {
@@ -83,7 +80,6 @@ public class PartidoController {
             boolean resultado = partido.getJugadores().size() > jugadoresAntes;
 
             if (resultado) {
-                // ✅ GUARDAR DESPUÉS DE MODIFICAR
                 gestorPartidos.guardar();
             }
 
@@ -104,7 +100,6 @@ public class PartidoController {
             boolean resultado = partido.getJugadores().size() < jugadoresAntes;
 
             if (resultado) {
-                // ✅ GUARDAR DESPUÉS DE MODIFICAR
                 gestorPartidos.guardar();
             }
 
@@ -121,7 +116,6 @@ public class PartidoController {
                 throw new IllegalArgumentException("El partido no puede ser nulo");
             }
             partido.iniciarPartido();
-            // ✅ GUARDAR DESPUÉS DE CAMBIAR ESTADO
             gestorPartidos.guardar();
             return true;
         } catch (Exception e) {
@@ -139,7 +133,6 @@ public class PartidoController {
             for (Jugador jugador : partido.getJugadores()) {
                 jugador.incrementarCantidadPartidosJugados();
             }
-            // ✅ GUARDAR DESPUÉS DE FINALIZAR
             gestorPartidos.guardar();
             return true;
         } catch (Exception e) {
@@ -154,7 +147,6 @@ public class PartidoController {
                 throw new IllegalArgumentException("El partido no puede ser nulo");
             }
             partido.cancelarPartido();
-            // ✅ GUARDAR DESPUÉS DE CANCELAR
             gestorPartidos.guardar();
             return true;
         } catch (Exception e) {
@@ -169,7 +161,6 @@ public class PartidoController {
                 throw new IllegalArgumentException("El partido o estrategia no puede ser nulo");
             }
             partido.cambiarEstrategia(nuevaEstrategia);
-            // ✅ GUARDAR DESPUÉS DE CAMBIAR ESTRATEGIA
             gestorPartidos.guardar();
             System.out.println("Estrategia de emparejamiento cambiada exitosamente");
             return true;
@@ -186,7 +177,6 @@ public class PartidoController {
             }
             boolean resultado = gestorPartidos.eliminarPartido(partido);
             if (resultado) {
-                // ✅ GUARDAR DESPUÉS DE ELIMINAR
                 gestorPartidos.guardar();
             }
             return resultado;
@@ -195,8 +185,6 @@ public class PartidoController {
             return false;
         }
     }
-
-    // ========== MÉTODOS DE BÚSQUEDA - NO NECESITAN GUARDAR ==========
 
     public String obtenerInformacionPartido(Partido partido) {
         if (partido == null) return "Partido no válido";
@@ -209,7 +197,6 @@ public class PartidoController {
                 .append("Duración: ").append(partido.getDuracion()).append(" horas\n")
                 .append("Estado: ").append(partido.getNombreEstado()).append("\n");
 
-        // Agregar información sobre requisitos de nivel
         IEstrategiaEmparejamiento estrategia = partido.getEmparejamiento();
         if (estrategia instanceof EmparejamientoPorNivel) {
             info.append("Requisitos de nivel: ").append(estrategia.toString()).append("\n");
@@ -222,12 +209,14 @@ public class PartidoController {
             info.append("Lista de jugadores:\n");
             for (Jugador jugador : partido.getJugadores()) {
                 info.append("  - ").append(jugador.getUsername())
-                .append(" (").append(jugador.getNivel()).append(")\n");
+                        .append(" (").append(jugador.getNivel()).append(")\n");
             }
         }
 
         return info.toString();
     }
+
+    // ==== Búsquedas ====
 
     public List<Partido> buscarPartidosPorDeporte(Deporte deporte) {
         return gestorPartidos.buscarPorDeporte(deporte);
