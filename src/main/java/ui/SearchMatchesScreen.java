@@ -30,20 +30,16 @@ public class SearchMatchesScreen {
     }
 
     public void show() {
-        // Layout principal horizontal
         HBox mainLayout = new HBox(20);
         mainLayout.setPadding(new Insets(20));
 
-        // Panel izquierdo (búsqueda)
         VBox leftPanel = new VBox(15);
         leftPanel.setPrefWidth(600);
 
-        // Panel derecho (mis partidos)
         VBox rightPanel = new VBox(15);
         rightPanel.setPrefWidth(300);
         rightPanel.setStyle("-fx-border-color: lightgray; -fx-border-width: 0 0 0 1; -fx-padding: 0 0 0 15;");
 
-        // Configurar panel izquierdo
         Label titleLabel = new Label("Buscar Partidos");
         titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
 
@@ -54,29 +50,25 @@ public class SearchMatchesScreen {
         leftPanel.getChildren().addAll(titleLabel, filtrosPanel, resultadosPanel, botonesPanel);
         VBox.setVgrow(resultadosPanel, Priority.ALWAYS);
 
-        // Configurar panel derecho
         Label misPartidosTitle = new Label("Mis Partidos");
         misPartidosTitle.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
         misPartidosListView = new ListView<>();
+        misPartidosListView.setFixedCellSize(-1); // permitir celdas con altura dinámica
         misPartidosListView.setPrefHeight(400);
-        misPartidosListView.setCellFactory(lv -> new PartidoListCell());
+        misPartidosListView.setCellFactory(lv -> new MisPartidosListCell(jugadorActual));
         VBox.setVgrow(misPartidosListView, Priority.ALWAYS);
 
         Button refreshButton = new Button("Actualizar Mis Partidos");
         refreshButton.setOnAction(e -> cargarMisPartidos());
 
         rightPanel.getChildren().addAll(misPartidosTitle, misPartidosListView, refreshButton);
-
-        // Agregar paneles al layout principal
         mainLayout.getChildren().addAll(leftPanel, rightPanel);
         HBox.setHgrow(leftPanel, Priority.ALWAYS);
 
-        // Cargar datos iniciales
         cargarPartidosDisponibles();
         cargarMisPartidos();
 
-        // Crear y mostrar la escena
         ScrollPane scrollPane = new ScrollPane(mainLayout);
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
@@ -99,23 +91,6 @@ public class SearchMatchesScreen {
         }
     }
 
-    // ... resto de los métodos existentes ...
-
-    // Asegúrate de actualizar ambas listas cuando te unes a un partido
-    private void unirseAPartido(Partido partido) {
-        try {
-            if (partidoController.agregarJugadorAPartido(partido, jugadorActual)) {
-                mostrarAlerta("¡Te has unido al partido exitosamente!", Alert.AlertType.INFORMATION);
-                cargarPartidosDisponibles();
-                cargarMisPartidos(); // Actualizar la lista de mis partidos
-            } else {
-                mostrarAlerta("No se pudo unir al partido. Verifica si cumples los requisitos.", Alert.AlertType.ERROR);
-            }
-        } catch (Exception e) {
-            mostrarAlerta("Error al unirse al partido: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
     private VBox crearPanelFiltros() {
         VBox panel = new VBox(10);
         panel.setStyle("-fx-border-color: lightgray; -fx-border-width: 1; -fx-padding: 15;");
@@ -123,50 +98,29 @@ public class SearchMatchesScreen {
         Label filtrosLabel = new Label("Filtros de Búsqueda");
         filtrosLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
-        // ComboBox para Deporte
         Label deporteLabel = new Label("Deporte:");
         ComboBox<Deporte> deporteCombo = new ComboBox<>();
-        deporteCombo.getItems().addAll(
-                Futbol.getInstancia(),
-                Basquet.getInstancia(),
-                Voley.getInstancia()
-        );
+        deporteCombo.getItems().addAll(Futbol.getInstancia(), Basquet.getInstancia(), Voley.getInstancia());
         deporteCombo.setPromptText("Seleccionar deporte (opcional)");
         deporteCombo.setMaxWidth(Double.MAX_VALUE);
 
-        // TextField para Ubicación
         Label ubicacionLabel = new Label("Ubicación:");
         TextField ubicacionField = new TextField();
         ubicacionField.setPromptText("Buscar por ubicación (opcional)");
 
-        // ComboBox para Estado
         Label estadoLabel = new Label("Estado:");
         ComboBox<String> estadoCombo = new ComboBox<>();
-        estadoCombo.getItems().addAll(
-                "NecesitamosJugadores",
-                "Confirmado",
-                "Finalizado",
-                "Cancelado"
-        );
+        estadoCombo.getItems().addAll("NecesitamosJugadores", "Confirmado", "Finalizado", "Cancelado");
         estadoCombo.setPromptText("Seleccionar estado (opcional)");
         estadoCombo.setMaxWidth(Double.MAX_VALUE);
 
-        // Botones de búsqueda
         HBox botonesSearch = new HBox(10);
         botonesSearch.setAlignment(Pos.CENTER);
 
         Button buscarBtn = new Button("Buscar con Filtros");
-        buscarBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
-        buscarBtn.setOnAction(e -> {
-            Deporte deporteSeleccionado = deporteCombo.getValue();
-            String ubicacion = ubicacionField.getText().trim();
-            String estado = estadoCombo.getValue();
-
-            buscarConFiltros(deporteSeleccionado, ubicacion, estado);
-        });
+        buscarBtn.setOnAction(e -> buscarConFiltros(deporteCombo.getValue(), ubicacionField.getText().trim(), estadoCombo.getValue()));
 
         Button disponiblesBtn = new Button("Ver Disponibles");
-        disponiblesBtn.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white;");
         disponiblesBtn.setOnAction(e -> cargarPartidosDisponibles());
 
         Button limpiarBtn = new Button("Limpiar Filtros");
@@ -194,7 +148,6 @@ public class SearchMatchesScreen {
 
     private VBox crearPanelResultados() {
         VBox panel = new VBox(10);
-
         resultadosLabel = new Label("Partidos Disponibles");
         resultadosLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
@@ -211,13 +164,9 @@ public class SearchMatchesScreen {
         panel.setAlignment(Pos.CENTER);
 
         Button crearPartidoBtn = new Button("Crear Partido");
-        crearPartidoBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px;");
-        crearPartidoBtn.setOnAction(e -> {
-            new CreateMatchScreen(stage, jugadorActual).show();
-        });
+        crearPartidoBtn.setOnAction(e -> new CreateMatchScreen(stage, jugadorActual).show());
 
         Button unirseBtn = new Button("Unirse al Partido");
-        unirseBtn.setStyle("-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-size: 14px;");
         unirseBtn.setOnAction(e -> {
             Partido partidoSeleccionado = partidosListView.getSelectionModel().getSelectedItem();
             if (partidoSeleccionado != null) {
@@ -238,10 +187,7 @@ public class SearchMatchesScreen {
         });
 
         Button volverBtn = new Button("Volver");
-        volverBtn.setOnAction(e -> {
-            // TODO: Volver a la pantalla anterior (Home)
-            stage.close();
-        });
+        volverBtn.setOnAction(e -> stage.close());
 
         panel.getChildren().addAll(crearPartidoBtn, unirseBtn, verDetallesBtn, volverBtn);
         return panel;
@@ -250,34 +196,21 @@ public class SearchMatchesScreen {
     private void buscarConFiltros(Deporte deporte, String ubicacion, String estado) {
         List<Partido> partidos;
 
-        // Si todos los filtros están vacíos, mostrar disponibles
         if (deporte == null && (ubicacion == null || ubicacion.isEmpty()) && estado == null) {
             partidos = partidoController.buscarPartidosDisponibles();
-            resultadosLabel.setText("Partidos Disponibles (sin filtros específicos)");
-        }
-        // Si hay múltiples criterios, usar búsqueda combinada
-        else if ((deporte != null ? 1 : 0) + (ubicacion != null && !ubicacion.isEmpty() ? 1 : 0) + (estado != null ? 1 : 0) > 1) {
-            partidos = partidoController.buscarPartidosPorCriterios(
-                    deporte,
-                    ubicacion,
-                    estado,
-                    null
-            );
+            resultadosLabel.setText("Partidos Disponibles (sin filtros)");
+        } else if ((deporte != null ? 1 : 0) + (!ubicacion.isEmpty() ? 1 : 0) + (estado != null ? 1 : 0) > 1) {
+            partidos = partidoController.buscarPartidosPorCriterios(deporte, ubicacion, estado, null);
             resultadosLabel.setText("Resultados con filtros combinados");
-        }
-        // Búsquedas individuales
-        else if (deporte != null) {
+        } else if (deporte != null) {
             partidos = partidoController.buscarPartidosPorDeporte(deporte);
             resultadosLabel.setText("Partidos de " + deporte);
-        } else if (ubicacion != null && !ubicacion.isEmpty()) {
+        } else if (!ubicacion.isEmpty()) {
             partidos = partidoController.buscarPartidosPorUbicacion(ubicacion);
             resultadosLabel.setText("Partidos en: " + ubicacion);
-        } else if (estado != null) {
+        } else {
             partidos = partidoController.buscarPartidosPorEstado(estado);
             resultadosLabel.setText("Partidos con estado: " + estado);
-        } else {
-            partidos = partidoController.buscarPartidosDisponibles();
-            resultadosLabel.setText("Partidos Disponibles");
         }
 
         actualizarListaPartidos(partidos);
@@ -298,7 +231,6 @@ public class SearchMatchesScreen {
     private void actualizarListaPartidos(List<Partido> partidos) {
         ObservableList<Partido> observablePartidos = FXCollections.observableArrayList(partidos);
         partidosListView.setItems(observablePartidos);
-
         if (partidos.isEmpty()) {
             partidosListView.setPlaceholder(new Label("No se encontraron partidos con los criterios especificados"));
         }
@@ -315,18 +247,32 @@ public class SearchMatchesScreen {
         alert.showAndWait();
     }
 
+    private void unirseAPartido(Partido partido) {
+        try {
+            if (partidoController.agregarJugadorAPartido(partido, jugadorActual)) {
+                mostrarAlerta("¡Te has unido al partido exitosamente!", Alert.AlertType.INFORMATION);
+                cargarPartidosDisponibles();
+                cargarMisPartidos();
+            } else {
+                mostrarAlerta("No se pudo unir al partido. Verifica si cumples los requisitos.", Alert.AlertType.ERROR);
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error al unirse al partido: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
     private void mostrarAlerta(String mensaje, Alert.AlertType tipo) {
         Alert alert = new Alert(tipo);
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
 
-    // Clase interna para personalizar cómo se muestran los partidos en la lista
+    // ==== CELDAS PERSONALIZADAS ====
+
     private static class PartidoListCell extends ListCell<Partido> {
         @Override
         protected void updateItem(Partido partido, boolean empty) {
             super.updateItem(partido, empty);
-
             if (empty || partido == null) {
                 setText(null);
                 setGraphic(null);
@@ -334,24 +280,70 @@ public class SearchMatchesScreen {
                 VBox content = new VBox(5);
                 content.setPadding(new Insets(8));
 
-                Label mainInfo = new Label(String.format("%s - %s",
-                        partido.getDeporte(),
-                        partido.getUbicacion()));
-                mainInfo.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+                Label mainInfo = new Label(partido.getDeporte() + " - " + partido.getUbicacion());
+                mainInfo.setStyle("-fx-font-weight: bold;");
 
-                Label timeInfo = new Label("Fecha: " + partido.getHorario());
-                timeInfo.setStyle("-fx-font-size: 12px;");
+                Label fecha = new Label("Fecha: " + partido.getHorario());
+                Label estado = new Label("Estado: " + partido.getNombreEstado());
 
-                Label statusInfo = new Label(String.format("Estado: %s | Jugadores: %d/%d",
-                        partido.getNombreEstado(),
-                        partido.getJugadores().size(),
-                        partido.getCupoMaximo()));
-                statusInfo.setStyle("-fx-font-size: 12px; -fx-text-fill: gray;");
+                content.getChildren().addAll(mainInfo, fecha, estado);
+                setGraphic(content);
+            }
+        }
+    }
 
-                content.getChildren().addAll(mainInfo, timeInfo, statusInfo);
+    private class MisPartidosListCell extends ListCell<Partido> {
+        private final Jugador jugadorActual;
+
+        public MisPartidosListCell(Jugador jugadorActual) {
+            this.jugadorActual = jugadorActual;
+        }
+
+        @Override
+        protected void updateItem(Partido partido, boolean empty) {
+            super.updateItem(partido, empty);
+            if (empty || partido == null) {
+                setText(null);
+                setGraphic(null);
+            } else {
+                VBox content = new VBox(5);
+                content.setPadding(new Insets(8));
+
+                Label info = new Label(partido.getDeporte() + " - " + partido.getUbicacion());
+                info.setStyle("-fx-font-weight: bold;");
+
+                Label fecha = new Label("Fecha: " + partido.getHorario());
+                Label estado = new Label("Estado: " + partido.getNombreEstado());
+
+                content.getChildren().addAll(info, fecha, estado);
+
+                if (jugadorActual.equals(partido.getCreador())) {
+                    Button cancelarBtn = new Button("Cancelar");
+                    cancelarBtn.setStyle("-fx-background-color: #f44336; -fx-text-fill: white;");
+                    cancelarBtn.setOnAction(e -> {
+                        boolean confirmar = confirmarCancelacion(partido);
+                        if (confirmar) {
+                            partidoController.cancelarPartido(partido);
+                            cargarMisPartidos();
+                            mostrarAlerta("Partido cancelado correctamente.", Alert.AlertType.INFORMATION);
+                        }
+                    });
+
+                    VBox.setMargin(cancelarBtn, new Insets(5, 0, 0, 0));
+                    content.getChildren().add(cancelarBtn);
+                }
+
                 setGraphic(content);
                 setText(null);
             }
+        }
+
+        private boolean confirmarCancelacion(Partido partido) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmar cancelación");
+            alert.setHeaderText("¿Estás seguro que querés cancelar este partido?");
+            alert.setContentText("Ubicación: " + partido.getUbicacion() + "\nFecha: " + partido.getHorario());
+            return alert.showAndWait().filter(response -> response == ButtonType.OK).isPresent();
         }
     }
 }

@@ -37,7 +37,7 @@ public class PartidoController {
 
         IEstadoPartido estadoInicial = new NecesitamosJugadores();
         Partido nuevoPartido = new Partido(cupoMaximo, deporte, ubicacion,
-                horario, duracion, estadoInicial, emparejamiento);
+                horario, duracion, estadoInicial, emparejamiento, creador);
 
         // Agregar al creador como primer jugador
         nuevoPartido.agregarJugador(creador);

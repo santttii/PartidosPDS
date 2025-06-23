@@ -27,12 +27,13 @@ public class Partido implements IObservable, Serializable {
     private double duracion;
     private IEstadoPartido estado;
     private IEstrategiaEmparejamiento emparejamiento;
+    private Jugador creador;
 
     private ArrayList<Jugador> jugadores;
     private ArrayList<IObserver> jugadoresObserver;
 
     public Partido(int cupoMaximo, Deporte deporte, String ubicacion, Date horario, double duracion,
-                   IEstadoPartido estado, IEstrategiaEmparejamiento emparejamiento) {
+                   IEstadoPartido estado, IEstrategiaEmparejamiento emparejamiento, Jugador creador) {
         this.cupoMaximo = cupoMaximo;
         this.deporte = deporte;
         this.ubicacion = ubicacion;
@@ -42,9 +43,14 @@ public class Partido implements IObservable, Serializable {
         this.emparejamiento = emparejamiento;
         this.jugadores = new ArrayList<>();
         this.jugadoresObserver = new ArrayList<>();
+        this.creador = creador;
     }
 
     // Getters y setters
+    public Jugador getCreador() {
+        return creador;
+    }
+
 
     public int getCupoMaximo() {
         return cupoMaximo;
