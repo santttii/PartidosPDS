@@ -146,9 +146,16 @@ public class PartidoController {
             if (partido == null) {
                 throw new IllegalArgumentException("El partido no puede ser nulo");
             }
-            partido.cancelarPartido();
-            gestorPartidos.guardar();
-            return true;
+
+            boolean eliminado = gestorPartidos.eliminarPartido(partido);
+            if (eliminado) {
+                gestorPartidos.guardar(); // Persistimos el cambio
+                System.out.println("Partido cancelado y eliminado correctamente.");
+            } else {
+                System.err.println("No se pudo eliminar el partido.");
+            }
+
+            return eliminado;
         } catch (Exception e) {
             System.err.println("Error al cancelar partido: " + e.getMessage());
             return false;

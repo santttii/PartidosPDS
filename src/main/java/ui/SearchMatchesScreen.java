@@ -89,7 +89,11 @@ public class SearchMatchesScreen {
 
     private void cargarMisPartidos() {
         if (jugadorActual != null) {
-            List<Partido> misPartidos = partidoController.buscarPartidosPorJugador(jugadorActual);
+            List<Partido> misPartidos = partidoController.buscarPartidosPorJugador(jugadorActual)
+                    .stream()
+                    .filter(p -> !"Cancelado".equalsIgnoreCase(p.getNombreEstado()))
+                    .toList();
+
             ObservableList<Partido> observableMisPartidos = FXCollections.observableArrayList(misPartidos);
             misPartidosListView.setItems(observableMisPartidos);
 
@@ -230,12 +234,17 @@ public class SearchMatchesScreen {
         Button verDetallesBtn = new Button("Ver Detalles");
         verDetallesBtn.setOnAction(e -> {
             Partido partidoSeleccionado = partidosListView.getSelectionModel().getSelectedItem();
+            if (partidoSeleccionado == null) {
+                partidoSeleccionado = misPartidosListView.getSelectionModel().getSelectedItem();
+            }
+
             if (partidoSeleccionado != null) {
                 mostrarDetallesPartido(partidoSeleccionado);
             } else {
                 mostrarAlerta("Por favor, selecciona un partido primero.", Alert.AlertType.WARNING);
             }
         });
+
 
         Button volverBtn = new Button("Volver");
         volverBtn.setOnAction(e -> {

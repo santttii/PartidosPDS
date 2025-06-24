@@ -48,9 +48,9 @@ public class CreateMatchScreen {
         stage.show();
         // Mejorar el debug para ver más información del jugador
         if (jugadorActual != null) {
-            System.out.println("Jugador actual en CreateMatchScreen: " + 
-                              jugadorActual.getUsername() + 
-                              " (Nivel: " + jugadorActual.getNivel() + ")");
+            System.out.println("Jugador actual en CreateMatchScreen: " +
+                    jugadorActual.getUsername() +
+                    " (Nivel: " + jugadorActual.getNivel() + ")");
         } else {
             System.out.println("¡Advertencia! jugadorActual es null en CreateMatchScreen");
         }
@@ -96,11 +96,11 @@ public class CreateMatchScreen {
         Label estrategiaLabel = new Label("Estrategia de emparejamiento:");
         ComboBox<String> estrategiaCombo = new ComboBox<>();
         estrategiaCombo.getItems().addAll(
-            "Cualquier nivel",
-            "Nivel específico",
-            "Rango de nivel",
-            "Por cantidad de partidos",
-            "Por ubicación"
+                "Cualquier nivel",
+                "Nivel específico",
+                "Rango de nivel",
+                "Por cantidad de partidos",
+                "Por ubicación"
         );
 
         // Panel para configuración de niveles
@@ -121,9 +121,9 @@ public class CreateMatchScreen {
         nivelMaxCombo.getItems().addAll(Jugador.NivelJugador.values());
 
         nivelesPanel.getChildren().addAll(
-            nivelEspecificoCombo,
-            nivelMinLabel, nivelMinCombo,
-            nivelMaxLabel, nivelMaxCombo
+                nivelEspecificoCombo,
+                nivelMinLabel, nivelMinCombo,
+                nivelMaxLabel, nivelMaxCombo
         );
         nivelesPanel.setVisible(false);
 
@@ -162,12 +162,77 @@ public class CreateMatchScreen {
         // Eventos
         crearBtn.setOnAction(e -> {
             try {
-                // Validar campos
+                // Validar campos básicos
                 if (deporteCombo.getValue() == null || ubicacionField.getText().isEmpty() ||
                         datePicker.getValue() == null || horaCombo.getValue() == null ||
                         estrategiaCombo.getValue() == null) {
                     mostrarError("Todos los campos son obligatorios");
                     return;
+                }
+
+                // VALIDACIONES ESPECÍFICAS POR ESTRATEGIA
+                String estrategiaSeleccionada = estrategiaCombo.getValue();
+
+                // 1. NIVEL ESPECÍFICO: El nivel del usuario debe coincidir exactamente
+                if (estrategiaSeleccionada.equals("Nivel específico")) {
+                    if (nivelEspecificoCombo.getValue() == null) {
+                        mostrarError("Debe seleccionar un nivel");
+                        return;
+                    }
+
+                    if (!jugadorActual.getNivel().equals(nivelEspecificoCombo.getValue())) {
+                        mostrarError("No puedes crear un partido para nivel " + nivelEspecificoCombo.getValue() +
+                                " porque tu nivel es " + jugadorActual.getNivel());
+                        return;
+                    }
+                }
+
+                // 2. RANGO DE NIVEL: El usuario debe estar dentro del rango especificado
+                if (estrategiaSeleccionada.equals("Rango de nivel")) {
+                    if (nivelMinCombo.getValue() == null || nivelMaxCombo.getValue() == null) {
+                        mostrarError("Debe seleccionar niveles mínimo y máximo");
+                        return;
+                    }
+
+                    Jugador.NivelJugador nivelUsuario = jugadorActual.getNivel();
+                    Jugador.NivelJugador nivelMin = nivelMinCombo.getValue();
+                    Jugador.NivelJugador nivelMax = nivelMaxCombo.getValue();
+
+                    // Verificar que el rango sea válido (mínimo <= máximo)
+                    if (nivelMin.ordinal() > nivelMax.ordinal()) {
+                        mostrarError("El nivel mínimo no puede ser mayor que el nivel máximo");
+                        return;
+                    }
+
+                    // Verificar que el nivel del usuario esté dentro del rango
+                    if (nivelUsuario.ordinal() < nivelMin.ordinal() ||
+                            nivelUsuario.ordinal() > nivelMax.ordinal()) {
+                        mostrarError("No puedes crear este partido porque tu nivel (" + nivelUsuario +
+                                ") no está dentro del rango especificado (" + nivelMin + " - " + nivelMax + ")");
+                        return;
+                    }
+                }
+
+                // 3. VALIDACIÓN GENERAL DE UBICACIÓN:
+                // La ubicación del partido SIEMPRE debe coincidir con la del usuario
+                String ubicacionPartido = ubicacionField.getText().trim();
+                String ubicacionUsuario = jugadorActual.getUbicacion();
+
+                if (ubicacionUsuario == null || ubicacionUsuario.isEmpty()) {
+                    mostrarError("Tu perfil no tiene ubicación configurada. Actualiza tu perfil antes de crear partidos");
+                    return;
+                }
+
+                if (!ubicacionPartido.equalsIgnoreCase(ubicacionUsuario)) {
+                    mostrarError("No puedes crear un partido en " + ubicacionPartido +
+                            " porque tu ubicación registrada es " + ubicacionUsuario);
+                    return;
+                }
+
+                // 4. VALIDACIÓN ESPECÍFICA PARA ESTRATEGIA "Por ubicación"
+                if (estrategiaSeleccionada.equals("Por ubicación")) {
+                    // Si llegamos aquí, ya sabemos que las ubicaciones coinciden
+                    // Esta estrategia no necesita validaciones adicionales
                 }
 
                 // Crear fecha combinando DatePicker y ComboBox de hora
@@ -184,21 +249,13 @@ public class CreateMatchScreen {
                         estrategia = new EmparejamientoPorNivel();
                         break;
                     case "Nivel específico":
-                        if (nivelEspecificoCombo.getValue() == null) {
-                            mostrarError("Debe seleccionar un nivel");
-                            return;
-                        }
                         estrategia = new EmparejamientoPorNivel(nivelEspecificoCombo.getValue());
                         break;
                     case "Rango de nivel":
-                        if (nivelMinCombo.getValue() == null || nivelMaxCombo.getValue() == null) {
-                            mostrarError("Debe seleccionar niveles mínimo y máximo");
-                            return;
-                        }
                         try {
                             estrategia = new EmparejamientoPorNivel(
-                                nivelMinCombo.getValue(),
-                                nivelMaxCombo.getValue()
+                                    nivelMinCombo.getValue(),
+                                    nivelMaxCombo.getValue()
                             );
                         } catch (IllegalArgumentException ex) {
                             mostrarError(ex.getMessage());
@@ -208,14 +265,17 @@ public class CreateMatchScreen {
                     case "Por cantidad de partidos":
                         estrategia = new EmparejamientoPorHistorial(0);
                         break;
+                    case "Por ubicación":
+                        estrategia = new EmparejamientoPorCercania(ubicacionField.getText().trim());
+                        break;
                     default:
                         estrategia = new EmparejamientoPorCercania("");
                 }
 
                 // *** CAMBIO PRINCIPAL: Obtener cupo máximo del deporte seleccionado ***
                 int cupoMaximo = deporteCombo.getValue().getCantidadJugadores();
-                System.out.println("Cupo máximo establecido automáticamente: " + cupoMaximo + 
-                                 " para " + deporteCombo.getValue().getNombre());
+                System.out.println("Cupo máximo establecido automáticamente: " + cupoMaximo +
+                        " para " + deporteCombo.getValue().getNombre());
 
                 // Crear partido
                 Partido nuevoPartido = partidoController.crearPartido(
