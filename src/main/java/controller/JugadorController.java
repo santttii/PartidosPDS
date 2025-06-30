@@ -138,8 +138,6 @@ public class JugadorController {
         if (username == null || username.trim().isEmpty()) throw new IllegalArgumentException("Username no válido");
         if (password == null || password.length() < 4) throw new IllegalArgumentException("Password muy corta");
         if (email == null || !email.contains("@")) throw new IllegalArgumentException("Email inválido");
-        if (nivel == null) throw new IllegalArgumentException("Nivel no especificado");
-        if (deporteFavorito == null) throw new IllegalArgumentException("Deporte favorito requerido");
         if (estrategiaNotificacion == null) throw new IllegalArgumentException("Estrategia de notificación requerida");
         if (ubicacion == null || ubicacion.trim().isEmpty()) throw new IllegalArgumentException("Ubicación requerida");
     }

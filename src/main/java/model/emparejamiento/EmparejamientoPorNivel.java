@@ -47,14 +47,20 @@ public class EmparejamientoPorNivel implements IEstrategiaEmparejamiento, Serial
         if (jugador == null) {
             return false;
         }
-        
+
+        Jugador.NivelJugador nivelJugador = jugador.getNivel();
+
+        // Si el jugador no tiene nivel, solo puede unirse a partidos con cualquierNivel
+        if (nivelJugador == null) {
+            return cualquierNivel;
+        }
+
         if (cualquierNivel) {
             return true;
         }
 
-        Jugador.NivelJugador nivelJugador = jugador.getNivel();
-        return nivelJugador.ordinal() >= nivelMinimo.ordinal() && 
-               nivelJugador.ordinal() <= nivelMaximo.ordinal();
+        return nivelJugador.ordinal() >= nivelMinimo.ordinal() &&
+            nivelJugador.ordinal() <= nivelMaximo.ordinal();
     }
 
     public Jugador.NivelJugador getNivelMinimo() {
