@@ -74,6 +74,15 @@ public class PartidoController {
             if (partido == null || jugador == null) {
                 throw new IllegalArgumentException("El partido o jugador no puede ser nulo");
             }
+
+            boolean jugadorYaExiste = partido.getJugadores().stream()
+                    .anyMatch(j -> j.getIdJugador() == jugador.getIdJugador());
+
+            if (jugadorYaExiste) {
+                System.out.println("El jugador ya está en el partido.");
+                return false;
+            }
+
             int jugadoresAntes = partido.getJugadores().size();
             partido.agregarJugador(jugador);
             boolean resultado = partido.getJugadores().size() > jugadoresAntes;
@@ -88,6 +97,7 @@ public class PartidoController {
             return false;
         }
     }
+
 
     public boolean eliminarJugadorDePartido(Partido partido, Jugador jugador) {
         try {

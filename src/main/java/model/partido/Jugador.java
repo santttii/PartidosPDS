@@ -122,6 +122,20 @@ public class Jugador implements IObserver, Serializable {
         this.cantidadPartidosJugados++;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Jugador jugador = (Jugador) o;
+        return idJugador == jugador.idJugador;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idJugador);
+    }
+
+
     // METODOS OBSERVER
 
     @Override

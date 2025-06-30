@@ -15,8 +15,6 @@ import model.notificacion.Notification;
 import model.partido.Comentario;
 
 public class Partido implements IObservable, Serializable {
-    private static final long serialVersionUID = -7439434449147364537L;
-
 
     public enum NivelJugador {
         PRINCIPIANTE,
@@ -132,7 +130,6 @@ public class Partido implements IObservable, Serializable {
         return comentarios;
     }
 
-    // Agregar jugador (con validación por estrategia)
     public void agregarJugador(Jugador jugador) {
         if (!(estado instanceof NecesitamosJugadores)) {
             System.out.println("No se pueden agregar jugadores en este estado (" + estado.getClass().getSimpleName() + ")");
@@ -144,7 +141,11 @@ public class Partido implements IObservable, Serializable {
             return;
         }
 
-        if (jugadores.contains(jugador)) {
+        // Verificar si el jugador ya está en el partido usando el ID
+        boolean jugadorYaExiste = jugadores.stream()
+                .anyMatch(j -> j.getIdJugador() == jugador.getIdJugador());
+
+        if (jugadorYaExiste) {
             System.out.println("El jugador ya está en el partido.");
             return;
         }
@@ -156,6 +157,7 @@ public class Partido implements IObservable, Serializable {
 
         verificarYActualizarEstado();
     }
+
 
     public void agregarComentario(Comentario comentario) {
         if (this.estado instanceof Finalizado) {
