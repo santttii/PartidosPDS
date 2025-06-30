@@ -9,12 +9,24 @@ public class Notification {
     private Deporte deporte;
     private String correoDestinatario;
     private String tokenFCM;
+    private String mensajePersonalizado; // Nuevo campo
 
-    public Notification(IEstadoPartido estado, Deporte deporte, String correoDestinatario,  String tokenFCM) {
+    // Constructor original
+    public Notification(IEstadoPartido estado, Deporte deporte, String correoDestinatario, String tokenFCM) {
         setEstado(estado);
         setDeporte(deporte);
         setCorreoDestinatario(correoDestinatario);
         setTokenFCM(tokenFCM);
+        this.mensajePersonalizado = null;
+    }
+
+    // Nuevo constructor para notificaciones generales
+    public Notification(String mensajePersonalizado, Deporte deporte, String correoDestinatario, String tokenFCM) {
+        this.estado = null;
+        setDeporte(deporte);
+        setCorreoDestinatario(correoDestinatario);
+        setTokenFCM(tokenFCM);
+        this.mensajePersonalizado = mensajePersonalizado;
     }
 
     public Deporte getDeporte() {
@@ -25,8 +37,15 @@ public class Notification {
         this.deporte = deporte;
     }
 
+    // Modificado para soportar mensaje personalizado
     public String TextoNotificacion() {
-        return "El partido cambio su estado a " + estado.getClass().getSimpleName() + ".";
+        if (mensajePersonalizado != null) {
+            return mensajePersonalizado;
+        }
+        if (estado != null) {
+            return "El partido cambio su estado a " + estado.getClass().getSimpleName() + ".";
+        }
+        return "Tienes una nueva notificación.";
     }
 
     public void setEstado(IEstadoPartido estado) {

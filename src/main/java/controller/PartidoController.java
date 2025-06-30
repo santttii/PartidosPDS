@@ -6,7 +6,9 @@ import model.estado.*;
 import model.partido.Deporte;
 import model.partido.Jugador;
 import model.partido.Partido;
+import model.notificacion.Notification;
 import data.PartidoDAO;
+import data.JugadorDAO;
 
 import java.util.Date;
 import java.util.List;
@@ -45,6 +47,7 @@ public class PartidoController {
 
             if (gestorPartidos.agregarPartido(nuevoPartido)) {
                 gestorPartidos.guardar();
+                notificarJugadoresPorDeporte(nuevoPartido); // <-- Agrega esta línea
                 System.out.println("Partido creado exitosamente en " + ubicacion + " para " + horario);
                 return nuevoPartido;
             } else {
@@ -311,5 +314,26 @@ public class PartidoController {
         if (horario.before(new Date())) throw new IllegalArgumentException("El horario no puede ser en el pasado");
         if (duracion <= 0) throw new IllegalArgumentException("La duración debe ser mayor a 0");
         if (emparejamiento == null) throw new IllegalArgumentException("La estrategia de emparejamiento no puede ser nula");
+    }
+
+    private void notificarJugadoresPorDeporte(Partido partido) {
+        if (partido == null) return;
+        Deporte deporte = partido.getDeporte();
+        // Cambia esto por el gestor de jugadores
+        List<Jugador> jugadores = JugadorDAO.getInstancia().buscarPorDeporte(deporte);
+        for (Jugador jugador : jugadores) {
+            // Evitar notificar al creador si no quieres
+            if (partido.getCreador() != null && jugador.getIdJugador() == partido.getCreador().getIdJugador()) continue;
+            String mensaje = "¡Nuevo partido de " + deporte.getNombre() + " disponible!\n"
+                    + "Ubicación: " + partido.getUbicacion() + "\n"
+                    + "Fecha y hora: " + partido.getHorario();
+            Notification noti = new Notification(
+                mensaje,
+                deporte,
+                jugador.getEmail(),
+                jugador.getTokenFCM()
+            );
+            jugador.serNotificado(partido, noti);
+        }
     }
 }
