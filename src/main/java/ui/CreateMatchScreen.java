@@ -15,6 +15,7 @@ import model.partido.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.time.LocalDate;
 
 public class CreateMatchScreen {
     private final Stage stage;
@@ -33,11 +34,9 @@ public class CreateMatchScreen {
         mainLayout.setPadding(new Insets(20));
         mainLayout.setAlignment(Pos.TOP_CENTER);
 
-        // Título
         Label titleLabel = new Label("Crear Nuevo Partido");
         titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
 
-        // Formulario
         GridPane form = createForm();
 
         mainLayout.getChildren().addAll(titleLabel, form);
@@ -46,7 +45,7 @@ public class CreateMatchScreen {
         stage.setScene(scene);
         stage.setTitle("Crear Partido");
         stage.show();
-        // Mejorar el debug para ver más información del jugador
+
         if (jugadorActual != null) {
             System.out.println("Jugador actual en CreateMatchScreen: " +
                     jugadorActual.getUsername() +
@@ -62,7 +61,6 @@ public class CreateMatchScreen {
         form.setVgap(10);
         form.setPadding(new Insets(20));
 
-        // Deporte
         Label deporteLabel = new Label("Deporte:");
         ComboBox<Deporte> deporteCombo = new ComboBox<>();
         deporteCombo.getItems().addAll(
@@ -72,26 +70,37 @@ public class CreateMatchScreen {
         );
         deporteCombo.setPromptText("Seleccionar deporte");
 
-        // Ubicación
         Label ubicacionLabel = new Label("Ubicación:");
         TextField ubicacionField = new TextField();
 
-        // *** REMOVIDO: Cupo máximo - ya no se muestra en la interfaz ***
-
-        // Fecha y hora
         Label fechaLabel = new Label("Fecha y hora:");
         DatePicker datePicker = new DatePicker();
-        ComboBox<String> horaCombo = new ComboBox<>();
-        for (int i = 8; i <= 22; i++) {
-            horaCombo.getItems().add(String.format("%02d:00", i));
-        }
-        HBox dateTimeBox = new HBox(10, datePicker, horaCombo);
 
-        // Duración
+        // Campo de texto para ingresar hora manualmente (HH:mm)
+        TextField horaField = new TextField();
+        horaField.setPromptText("14:00");
+        horaField.setPrefWidth(100);
+
+        horaField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*:?\\d*")) {
+                horaField.setText(oldValue);
+            }
+        });
+
+        horaField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                String texto = horaField.getText().trim();
+                if (!texto.matches("([01]?[0-9]|2[0-3]):[0-5][0-9]")) {
+                    horaField.setText("");
+                    mostrarAlerta("Formato de hora inválido. Use HH:mm (ejemplo: 14:00)", Alert.AlertType.ERROR);
+                }
+            }
+        });
+
+        HBox dateTimeBox = new HBox(10, datePicker, horaField);
+
         Label duracionLabel = new Label("Duración (horas):");
         Spinner<Double> duracionSpinner = new Spinner<>(0.5, 4.0, 1.5, 0.5);
-
-        // En CreateMatchScreen.java, en la parte de configuración de estrategia
 
         Label estrategiaLabel = new Label("Estrategia de emparejamiento:");
         ComboBox<String> estrategiaCombo = new ComboBox<>();
@@ -103,15 +112,12 @@ public class CreateMatchScreen {
                 "Por ubicación"
         );
 
-        // Panel para configuración de niveles
         VBox nivelesPanel = new VBox(10);
 
-        // Para nivel específico
         ComboBox<Jugador.NivelJugador> nivelEspecificoCombo = new ComboBox<>();
         nivelEspecificoCombo.getItems().addAll(Jugador.NivelJugador.values());
         nivelEspecificoCombo.setPromptText("Seleccione nivel");
 
-        // Para rango de niveles
         Label nivelMinLabel = new Label("Nivel mínimo:");
         ComboBox<Jugador.NivelJugador> nivelMinCombo = new ComboBox<>();
         nivelMinCombo.getItems().addAll(Jugador.NivelJugador.values());
@@ -127,7 +133,6 @@ public class CreateMatchScreen {
         );
         nivelesPanel.setVisible(false);
 
-        // Mostrar/ocultar controles según la estrategia seleccionada
         estrategiaCombo.setOnAction(e -> {
             String seleccion = estrategiaCombo.getValue();
             nivelEspecificoCombo.setVisible(seleccion.equals("Nivel específico"));
@@ -138,42 +143,35 @@ public class CreateMatchScreen {
             nivelesPanel.setVisible(seleccion.equals("Nivel específico") || seleccion.equals("Rango de nivel"));
         });
 
-        // Botones
         Button crearBtn = new Button("Crear Partido");
         crearBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
         Button cancelarBtn = new Button("Cancelar");
         HBox botonesBox = new HBox(10, crearBtn, cancelarBtn);
 
-        // Agregar elementos al form (sin el cupo máximo)
         form.add(deporteLabel, 0, 0);
         form.add(deporteCombo, 1, 0);
         form.add(ubicacionLabel, 0, 1);
         form.add(ubicacionField, 1, 1);
-        // *** REMOVIDO: cupoLabel y cupoSpinner ***
-        form.add(fechaLabel, 0, 2);      // Cambió de fila 3 a 2
-        form.add(dateTimeBox, 1, 2);     // Cambió de fila 3 a 2
-        form.add(duracionLabel, 0, 3);   // Cambió de fila 4 a 3
-        form.add(duracionSpinner, 1, 3); // Cambió de fila 4 a 3
-        form.add(estrategiaLabel, 0, 4); // Cambió de fila 5 a 4
-        form.add(estrategiaCombo, 1, 4); // Cambió de fila 5 a 4
-        form.add(nivelesPanel, 1, 5);    // Cambió de fila 6 a 5
-        form.add(botonesBox, 1, 6);      // Cambió de fila 7 a 6
+        form.add(fechaLabel, 0, 2);
+        form.add(dateTimeBox, 1, 2);
+        form.add(duracionLabel, 0, 3);
+        form.add(duracionSpinner, 1, 3);
+        form.add(estrategiaLabel, 0, 4);
+        form.add(estrategiaCombo, 1, 4);
+        form.add(nivelesPanel, 1, 5);
+        form.add(botonesBox, 1, 6);
 
-        // Eventos
         crearBtn.setOnAction(e -> {
             try {
-                // Validar campos básicos
                 if (deporteCombo.getValue() == null || ubicacionField.getText().isEmpty() ||
-                        datePicker.getValue() == null || horaCombo.getValue() == null ||
+                        datePicker.getValue() == null || horaField.getText().isEmpty() ||
                         estrategiaCombo.getValue() == null) {
                     mostrarError("Todos los campos son obligatorios");
                     return;
                 }
 
-                // VALIDACIONES ESPECÍFICAS POR ESTRATEGIA
                 String estrategiaSeleccionada = estrategiaCombo.getValue();
 
-                // 1. NIVEL ESPECÍFICO: El nivel del usuario debe coincidir exactamente
                 if (estrategiaSeleccionada.equals("Nivel específico")) {
                     if (nivelEspecificoCombo.getValue() == null) {
                         mostrarError("Debe seleccionar un nivel");
@@ -187,7 +185,6 @@ public class CreateMatchScreen {
                     }
                 }
 
-                // 2. RANGO DE NIVEL: El usuario debe estar dentro del rango especificado
                 if (estrategiaSeleccionada.equals("Rango de nivel")) {
                     if (nivelMinCombo.getValue() == null || nivelMaxCombo.getValue() == null) {
                         mostrarError("Debe seleccionar niveles mínimo y máximo");
@@ -198,23 +195,19 @@ public class CreateMatchScreen {
                     Jugador.NivelJugador nivelMin = nivelMinCombo.getValue();
                     Jugador.NivelJugador nivelMax = nivelMaxCombo.getValue();
 
-                    // Verificar que el rango sea válido (mínimo <= máximo)
                     if (nivelMin.ordinal() > nivelMax.ordinal()) {
                         mostrarError("El nivel mínimo no puede ser mayor que el nivel máximo");
                         return;
                     }
 
-                    // Verificar que el nivel del usuario esté dentro del rango
                     if (nivelUsuario.ordinal() < nivelMin.ordinal() ||
                             nivelUsuario.ordinal() > nivelMax.ordinal()) {
-                        mostrarError("No puedes crear este partido porque tu nivel (" + nivelUsuario +
+                        mostrarError("Tu nivel (" + nivelUsuario +
                                 ") no está dentro del rango especificado (" + nivelMin + " - " + nivelMax + ")");
                         return;
                     }
                 }
 
-                // 3. VALIDACIÓN GENERAL DE UBICACIÓN:
-                // La ubicación del partido SIEMPRE debe coincidir con la del usuario
                 String ubicacionPartido = ubicacionField.getText().trim();
                 String ubicacionUsuario = jugadorActual.getUbicacion();
 
@@ -229,20 +222,10 @@ public class CreateMatchScreen {
                     return;
                 }
 
-                // 4. VALIDACIÓN ESPECÍFICA PARA ESTRATEGIA "Por ubicación"
-                if (estrategiaSeleccionada.equals("Por ubicación")) {
-                    // Si llegamos aquí, ya sabemos que las ubicaciones coinciden
-                    // Esta estrategia no necesita validaciones adicionales
-                }
+                String hora = horaField.getText();
+                Date fechaHora = obtenerFechaHora(datePicker.getValue(), hora);
+                if (fechaHora == null) return;
 
-                // Crear fecha combinando DatePicker y ComboBox de hora
-                LocalDateTime dateTime = LocalDateTime.of(
-                        datePicker.getValue(),
-                        LocalDateTime.parse(datePicker.getValue() + "T" + horaCombo.getValue()).toLocalTime()
-                );
-                Date fecha = Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
-
-                // En la parte de creación del partido:
                 IEstrategiaEmparejamiento estrategia;
                 switch (estrategiaCombo.getValue()) {
                     case "Cualquier nivel":
@@ -272,25 +255,22 @@ public class CreateMatchScreen {
                         estrategia = new EmparejamientoPorCercania("");
                 }
 
-                // *** CAMBIO PRINCIPAL: Obtener cupo máximo del deporte seleccionado ***
                 int cupoMaximo = deporteCombo.getValue().getCantidadJugadores();
                 System.out.println("Cupo máximo establecido automáticamente: " + cupoMaximo +
                         " para " + deporteCombo.getValue().getNombre());
 
-                // Crear partido
                 Partido nuevoPartido = partidoController.crearPartido(
-                        cupoMaximo,                  // Usar el cupo del deporte
+                        cupoMaximo,
                         deporteCombo.getValue(),
                         ubicacionField.getText(),
-                        fecha,
+                        fechaHora,
                         duracionSpinner.getValue(),
                         estrategia,
-                        jugadorActual  // Agregamos el jugador actual como creador
+                        jugadorActual
                 );
 
                 if (nuevoPartido != null) {
                     mostrarExito("Partido creado exitosamente");
-                    // Redirigir a SearchMatchesScreen
                     new SearchMatchesScreen(stage, jugadorActual).show();
                 } else {
                     mostrarError("Error al crear el partido");
@@ -306,6 +286,20 @@ public class CreateMatchScreen {
         return form;
     }
 
+    private Date obtenerFechaHora(LocalDate fecha, String hora) {
+        try {
+            String[] partes = hora.split(":");
+            int horas = Integer.parseInt(partes[0]);
+            int minutos = Integer.parseInt(partes[1]);
+
+            LocalDateTime dateTime = fecha.atTime(horas, minutos);
+            return Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
+        } catch (Exception e) {
+            mostrarAlerta("Error al procesar la hora", Alert.AlertType.ERROR);
+            return null;
+        }
+    }
+
     private void mostrarError(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
@@ -316,6 +310,13 @@ public class CreateMatchScreen {
     private void mostrarExito(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Éxito");
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+
+    private void mostrarAlerta(String mensaje, Alert.AlertType tipo) {
+        Alert alert = new Alert(tipo);
+        alert.setTitle("Alerta");
         alert.setContentText(mensaje);
         alert.showAndWait();
     }

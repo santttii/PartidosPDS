@@ -1,7 +1,7 @@
 package model.estado;
 
 import model.partido.Partido;
-
+import java.util.Date;
 import java.io.Serializable;
 
 public class Confirmado implements IEstadoPartido, Serializable {
@@ -22,4 +22,21 @@ public class Confirmado implements IEstadoPartido, Serializable {
         System.out.println("Partido cancelado.");
         partido.cambiarEstado(new Cancelado());
     }
+
+    @Override
+    public void confirmar(Partido partido) {
+        System.out.println("El partido ya está confirmado");
+    }
+
+    @Override
+    public void jugar(Partido partido) {
+        Date horaActual = new Date();
+        if (horaActual.after(partido.getHorario())) {
+            partido.cambiarEstado(new EnJuego());
+        } else {
+            System.out.println("El partido aún no puede comenzar, debe esperar a la hora programada");
+        }
+    }
+
+
 }

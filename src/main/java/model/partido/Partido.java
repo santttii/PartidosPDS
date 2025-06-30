@@ -6,13 +6,17 @@ import java.util.Date;
 
 import model.emparejamiento.IEstrategiaEmparejamiento;
 import model.estado.Confirmado;
+import model.estado.Finalizado;
 import model.estado.IEstadoPartido;
 import model.estado.NecesitamosJugadores;
 import model.notificacion.IObservable;
 import model.notificacion.IObserver;
 import model.notificacion.Notification;
+import model.partido.Comentario;
 
 public class Partido implements IObservable, Serializable {
+    private static final long serialVersionUID = -7439434449147364537L;
+
 
     public enum NivelJugador {
         PRINCIPIANTE,
@@ -29,6 +33,7 @@ public class Partido implements IObservable, Serializable {
     private IEstrategiaEmparejamiento emparejamiento;
     private ArrayList<Jugador> jugadores;
     private ArrayList<IObserver> jugadoresObserver;
+    private ArrayList<Comentario> comentarios;
 
     // ✅ NUEVO: Creador del partido
     private Jugador creador;
@@ -44,6 +49,7 @@ public class Partido implements IObservable, Serializable {
         this.emparejamiento = emparejamiento;
         this.jugadores = new ArrayList<>();
         this.jugadoresObserver = new ArrayList<>();
+        this.comentarios = new ArrayList<>();
     }
 
     // Getters y setters
@@ -122,6 +128,10 @@ public class Partido implements IObservable, Serializable {
         return emparejamiento.esApto(jugador, this);
     }
 
+    public ArrayList<Comentario> getComentarios() {
+        return comentarios;
+    }
+
     // Agregar jugador (con validación por estrategia)
     public void agregarJugador(Jugador jugador) {
         if (!(estado instanceof NecesitamosJugadores)) {
@@ -147,13 +157,22 @@ public class Partido implements IObservable, Serializable {
         verificarYActualizarEstado();
     }
 
+    public void agregarComentario(Comentario comentario) {
+        if (this.estado instanceof Finalizado) {
+            if (this.comentarios == null) {
+                this.comentarios = new ArrayList<>();
+            }
+            this.comentarios.add(comentario);
+        }
+    }
+
     private void verificarYActualizarEstado() {
         int cantidad = jugadores.size();
 
         if (cantidad < cupoMaximo) {
             cambiarEstado(new NecesitamosJugadores());
         } else if (cantidad == cupoMaximo) {
-            cambiarEstado(new Confirmado());
+            confirmarPartido();
         } else {
             System.out.println("¡Cupo excedido!");
         }
@@ -218,4 +237,8 @@ public class Partido implements IObservable, Serializable {
     public void cancelarPartido() {
         estado.cancelar(this);
     }
+
+    public void confirmarPartido() {estado.confirmar(this);}
+
+    public void jugarPartido() {estado.jugar(this);}
 }

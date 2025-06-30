@@ -64,7 +64,11 @@ public class SearchMatchesScreen {
         VBox.setVgrow(misPartidosListView, Priority.ALWAYS);
 
         Button refreshButton = new Button("Actualizar Mis Partidos");
-        refreshButton.setOnAction(e -> cargarMisPartidos());
+        refreshButton.setOnAction(e -> {
+            partidoController.actualizarEstadosPartidos();
+            cargarMisPartidos();
+        });
+
 
         rightPanel.getChildren().addAll(misPartidosTitle, misPartidosListView, refreshButton);
 
@@ -91,7 +95,6 @@ public class SearchMatchesScreen {
         if (jugadorActual != null) {
             List<Partido> misPartidos = partidoController.buscarPartidosPorJugador(jugadorActual)
                     .stream()
-                    .filter(p -> !"Cancelado".equalsIgnoreCase(p.getNombreEstado()))
                     .toList();
 
             ObservableList<Partido> observableMisPartidos = FXCollections.observableArrayList(misPartidos);
@@ -355,14 +358,11 @@ public class SearchMatchesScreen {
     }
     private class MisPartidosListCell extends ListCell<Partido> {
         private final Jugador jugadorActual;
-
-        // Necesitamos acceso al PartidoController para cancelar el partido
         private final PartidoController partidoController;
 
-        // Constructor modificado para recibir el PartidoController
         public MisPartidosListCell(Jugador jugadorActual, PartidoController partidoController) {
             this.jugadorActual = jugadorActual;
-            this.partidoController = partidoController; // Inicializar el controlador
+            this.partidoController = partidoController;
         }
 
         @Override
@@ -383,15 +383,31 @@ public class SearchMatchesScreen {
 
                 content.getChildren().addAll(info, fecha, estado);
 
-                //  Corrección clave: Comparación por ID del jugador
-                if (partido.getCreador() != null && jugadorActual.getIdJugador() == partido.getCreador().getIdJugador()) {
+                // Agregar aquí el código del botón de comentar
+                if ("Finalizado".equals(partido.getNombreEstado()) && 
+                    partido.getJugadores().stream().anyMatch(j -> j.getIdJugador() == jugadorActual.getIdJugador())) {
+                    
+                    Button comentarBtn = new Button("Comentar");
+                    comentarBtn.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white;");
+                    comentarBtn.setOnAction(e -> {
+                        new ComentariosScreen(partido, jugadorActual, partidoController).show();
+                    });
+                    
+                    content.getChildren().add(comentarBtn);
+                }
+
+                // El resto del código existente para el botón de cancelar si es el creador
+                if (partido.getCreador() != null && 
+                    jugadorActual.getIdJugador() == partido.getCreador().getIdJugador() &&
+                    !"Cancelado".equals(partido.getNombreEstado()) && !"Finalizado".equals(partido.getNombreEstado())) {
+                    
                     Button cancelarBtn = new Button("Cancelar");
                     cancelarBtn.setStyle("-fx-background-color: #f44336; -fx-text-fill: white;");
                     cancelarBtn.setOnAction(e -> {
                         boolean confirmar = confirmarCancelacion(partido);
                         if (confirmar) {
                             partidoController.cancelarPartido(partido);
-                            cargarMisPartidos(); // Recargar la lista después de cancelar
+                            cargarMisPartidos();
                             mostrarAlerta("Partido cancelado correctamente.", Alert.AlertType.INFORMATION);
                         }
                     });
@@ -403,8 +419,8 @@ public class SearchMatchesScreen {
                 setGraphic(content);
                 setText(null);
             }
-
         }
+
         private boolean confirmarCancelacion(Partido partido) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirmar cancelación");
@@ -412,6 +428,5 @@ public class SearchMatchesScreen {
             alert.setContentText("Ubicación: " + partido.getUbicacion() + "\nFecha: " + partido.getHorario());
             return alert.showAndWait().filter(response -> response == ButtonType.OK).isPresent();
         }
-
     }
 }

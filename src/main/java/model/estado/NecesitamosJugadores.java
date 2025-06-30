@@ -21,4 +21,20 @@ public class NecesitamosJugadores implements IEstadoPartido, Serializable {
         System.out.println("Partido cancelado desde estado NecesitamosJugadores.");
         partido.cambiarEstado(new Cancelado());
     }
+
+    @Override
+    public void confirmar(Partido partido) {
+        if (partido.getJugadores().size() == partido.getCupoMaximo()) {
+            partido.cambiarEstado(new Confirmado());
+        } else {
+            System.out.println("No se puede confirmar el partido: Se necesitan más jugadores");
+        }
+    }
+
+    @Override
+    public void jugar(Partido partido) {
+        System.out.println("No se puede jugar un partido que necesita jugadores");
+    }
+
+
 }

@@ -27,4 +27,16 @@ public class EnJuego implements IEstadoPartido, Serializable {
     public void cancelar(Partido partido) {
         System.out.println("No se puede cancelar un partido en juego.");
     }
+
+    @Override
+    public void confirmar(Partido partido) {
+        System.out.println("No se puede confirmar un partido que ya está en juego");
+    }
+
+    @Override
+    public void jugar(Partido partido) {
+        System.out.println("El partido ya está en juego");
+    }
+
+
 }

@@ -20,4 +20,16 @@ public class Finalizado implements IEstadoPartido, Serializable {
     public void cancelar(Partido partido) {
         System.out.println("No se puede cancelar un partido ya finalizado.");
     }
+
+    @Override
+    public void confirmar(Partido partido) {
+        System.out.println("No se puede confirmar un partido finalizado");
+    }
+
+    @Override
+    public void jugar(Partido partido) {
+        System.out.println("No se puede jugar un partido que ya está finalizado");
+    }
+
+
 }

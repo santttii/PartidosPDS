@@ -20,4 +20,16 @@ public class Cancelado implements IEstadoPartido, Serializable {
     public void cancelar(Partido partido) {
         System.out.println("El partido ya está cancelado.");
     }
+
+    @Override
+    public void confirmar(Partido partido) {
+        System.out.println("No se puede confirmar un partido cancelado");
+    }
+
+    @Override
+    public void jugar(Partido partido) {
+        System.out.println("No se puede jugar un partido cancelado");
+    }
+
+
 }

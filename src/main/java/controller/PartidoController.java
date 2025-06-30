@@ -2,8 +2,7 @@ package controller;
 
 import model.emparejamiento.EmparejamientoPorNivel;
 import model.emparejamiento.IEstrategiaEmparejamiento;
-import model.estado.NecesitamosJugadores;
-import model.estado.IEstadoPartido;
+import model.estado.*;
 import model.partido.Deporte;
 import model.partido.Jugador;
 import model.partido.Partido;
@@ -110,33 +109,17 @@ public class PartidoController {
         }
     }
 
-    public boolean iniciarPartido(Partido partido) {
+    public boolean confirmarPartido(Partido partido) {
         try {
             if (partido == null) {
                 throw new IllegalArgumentException("El partido no puede ser nulo");
             }
-            partido.iniciarPartido();
-            gestorPartidos.guardar();
-            return true;
-        } catch (Exception e) {
-            System.err.println("Error al iniciar partido: " + e.getMessage());
-            return false;
-        }
-    }
 
-    public boolean finalizarPartido(Partido partido) {
-        try {
-            if (partido == null) {
-                throw new IllegalArgumentException("El partido no puede ser nulo");
-            }
-            partido.finalizarPartido();
-            for (Jugador jugador : partido.getJugadores()) {
-                jugador.incrementarCantidadPartidosJugados();
-            }
+            partido.confirmarPartido();
             gestorPartidos.guardar();
             return true;
         } catch (Exception e) {
-            System.err.println("Error al finalizar partido: " + e.getMessage());
+            System.err.println("Error al confirmar partido: " + e.getMessage());
             return false;
         }
     }
@@ -147,20 +130,15 @@ public class PartidoController {
                 throw new IllegalArgumentException("El partido no puede ser nulo");
             }
 
-            boolean eliminado = gestorPartidos.eliminarPartido(partido);
-            if (eliminado) {
-                gestorPartidos.guardar(); // Persistimos el cambio
-                System.out.println("Partido cancelado y eliminado correctamente.");
-            } else {
-                System.err.println("No se pudo eliminar el partido.");
-            }
-
-            return eliminado;
+            partido.cancelarPartido();
+            gestorPartidos.guardar();
+            return true;
         } catch (Exception e) {
             System.err.println("Error al cancelar partido: " + e.getMessage());
             return false;
         }
     }
+
 
     public boolean cambiarEstrategiaEmparejamiento(Partido partido, IEstrategiaEmparejamiento nuevaEstrategia) {
         try {
@@ -222,6 +200,38 @@ public class PartidoController {
 
         return info.toString();
     }
+
+    public void actualizarEstadosPartidos() {
+        Date horaActual = new Date();
+        List<Partido> partidos = this.obtenerTodosLosPartidos();
+
+        for (Partido partido : partidos) {
+            Date horarioInicio = partido.getHorario();
+            Date horarioFin = new Date(horarioInicio.getTime() +
+                    (long)(partido.getDuracion() * 60 * 60 * 1000));
+
+            if ("Confirmado".equals(partido.getNombreEstado())) {
+                if (horaActual.after(horarioInicio) && horaActual.before(horarioFin)) {
+                    partido.jugarPartido();
+                    gestorPartidos.guardar();
+                }
+            }
+
+            if ("EnJuego".equals(partido.getNombreEstado())) {
+                if (horaActual.after(horarioFin)) {
+                    partido.finalizarPartido();
+                    gestorPartidos.guardar();
+                }
+            }
+        }
+    }
+
+    public void guardarPartido(Partido partido) {
+        gestorPartidos.guardar();
+    }
+
+
+
 
     // ==== Búsquedas ====
 
