@@ -170,13 +170,8 @@ public class Partido implements IObservable, Serializable {
 
     private void verificarYActualizarEstado() {
         int cantidad = jugadores.size();
-
-        if (cantidad < cupoMaximo) {
-            cambiarEstado(new NecesitamosJugadores());
-        } else if (cantidad == cupoMaximo) {
+        if (cantidad == cupoMaximo) {
             confirmarPartido();
-        } else {
-            System.out.println("¡Cupo excedido!");
         }
     }
 
