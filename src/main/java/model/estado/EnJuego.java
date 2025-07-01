@@ -1,5 +1,6 @@
 package model.estado;
 
+import data.JugadorDAO;
 import model.partido.Jugador;
 import model.partido.Partido;
 
@@ -14,10 +15,15 @@ public class EnJuego implements IEstadoPartido, Serializable {
 
     @Override
     public void finalizar(Partido partido) {
-        if (!(partido.getEstado() instanceof Finalizado)) { 
+        if (!(partido.getEstado() instanceof Finalizado)) {
+            JugadorDAO jugadorDAO = JugadorDAO.getInstancia();
             for (Jugador jugador : partido.getJugadores()) {
-                jugador.incrementarCantidadPartidosJugados();
+                jugador.setCantidadPartidosJugados(jugador.getCantidadPartidosJugados() + 1);
+                jugadorDAO.actualizarJugador(jugador);
+                System.out.println("Incrementado partidos jugados para: " + jugador.getUsername() +
+                        " - Total: " + jugador.getCantidadPartidosJugados());
             }
+            jugadorDAO.guardar();
         }
         System.out.println("Partido finalizado.");
         partido.cambiarEstado(new Finalizado());

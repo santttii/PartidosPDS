@@ -193,9 +193,10 @@ public class PartidoController {
                 .append("Estado: ").append(partido.getNombreEstado()).append("\n");
 
         IEstrategiaEmparejamiento estrategia = partido.getEmparejamiento();
-        if (estrategia instanceof EmparejamientoPorNivel) {
-            info.append("Requisitos de nivel: ").append(estrategia.toString()).append("\n");
-        }
+
+        info.append("Requisitos de nivel: ")
+                .append(estrategia.getClass().getSimpleName())
+                .append("\n");
 
         info.append("Jugadores: ").append(partido.getJugadores().size()).append("/")
                 .append(partido.getCupoMaximo()).append("\n");

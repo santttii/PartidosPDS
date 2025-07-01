@@ -80,6 +80,8 @@ public class SearchMatchesScreen {
         cargarPartidosDisponibles();
         cargarMisPartidos();
 
+        System.out.println(jugadorActual.getCantidadPartidosJugados());
+
         // Crear y mostrar la escena
         ScrollPane scrollPane = new ScrollPane(mainLayout);
         scrollPane.setFitToWidth(true);

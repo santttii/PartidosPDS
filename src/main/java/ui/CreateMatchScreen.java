@@ -22,6 +22,10 @@ public class CreateMatchScreen {
     private final PartidoController partidoController;
     private final Jugador jugadorActual;
 
+    // Agregar el nuevo campo para la cantidad de partidos
+    private TextField cantidadPartidosField;
+    private Label cantidadPartidosLabel;
+
     public CreateMatchScreen(Stage stage, Jugador jugadorActual) {
         this.stage = stage;
         this.partidoController = new PartidoController();
@@ -29,7 +33,6 @@ public class CreateMatchScreen {
     }
 
     public void show() {
-
         VBox mainLayout = new VBox(15);
         mainLayout.setPadding(new Insets(20));
         mainLayout.setAlignment(Pos.TOP_CENTER);
@@ -76,7 +79,6 @@ public class CreateMatchScreen {
         Label fechaLabel = new Label("Fecha y hora:");
         DatePicker datePicker = new DatePicker();
 
-        // Campo de texto para ingresar hora manualmente (HH:mm)
         TextField horaField = new TextField();
         horaField.setPromptText("14:00");
         horaField.setPrefWidth(100);
@@ -112,6 +114,23 @@ public class CreateMatchScreen {
                 "Por ubicación"
         );
 
+        // Inicializar los componentes para cantidad de partidos
+        cantidadPartidosLabel = new Label("Cantidad mínima de partidos:");
+        cantidadPartidosField = new TextField();
+        cantidadPartidosField.setPromptText("Ingrese la cantidad");
+        cantidadPartidosField.setPrefWidth(100);
+        
+        // Solo permitir números en el campo
+        cantidadPartidosField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                cantidadPartidosField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+
+        // Ocultar inicialmente
+        cantidadPartidosLabel.setVisible(false);
+        cantidadPartidosField.setVisible(false);
+
         VBox nivelesPanel = new VBox(10);
 
         ComboBox<Jugador.NivelJugador> nivelEspecificoCombo = new ComboBox<>();
@@ -140,6 +159,8 @@ public class CreateMatchScreen {
             nivelMinCombo.setVisible(seleccion.equals("Rango de nivel"));
             nivelMaxLabel.setVisible(seleccion.equals("Rango de nivel"));
             nivelMaxCombo.setVisible(seleccion.equals("Rango de nivel"));
+            cantidadPartidosLabel.setVisible(seleccion.equals("Por cantidad de partidos"));
+            cantidadPartidosField.setVisible(seleccion.equals("Por cantidad de partidos"));
             nivelesPanel.setVisible(seleccion.equals("Nivel específico") || seleccion.equals("Rango de nivel"));
         });
 
@@ -159,7 +180,10 @@ public class CreateMatchScreen {
         form.add(estrategiaLabel, 0, 4);
         form.add(estrategiaCombo, 1, 4);
         form.add(nivelesPanel, 1, 5);
-        form.add(botonesBox, 1, 6);
+        // Agregar los nuevos componentes
+        form.add(cantidadPartidosLabel, 0, 6);
+        form.add(cantidadPartidosField, 1, 6);
+        form.add(botonesBox, 1, 7);
 
         crearBtn.setOnAction(e -> {
             try {
@@ -208,6 +232,13 @@ public class CreateMatchScreen {
                     }
                 }
 
+                if (estrategiaSeleccionada.equals("Por cantidad de partidos")) {
+                    if (cantidadPartidosField.getText().isEmpty()) {
+                        mostrarError("Debe especificar la cantidad mínima de partidos");
+                        return;
+                    }
+                }
+
                 String ubicacionPartido = ubicacionField.getText().trim();
                 String ubicacionUsuario = jugadorActual.getUbicacion();
 
@@ -246,7 +277,8 @@ public class CreateMatchScreen {
                         }
                         break;
                     case "Por cantidad de partidos":
-                        estrategia = new EmparejamientoPorHistorial(0);
+                        int cantidadMinima = Integer.parseInt(cantidadPartidosField.getText());
+                        estrategia = new EmparejamientoPorHistorial(cantidadMinima);
                         break;
                     case "Por ubicación":
                         estrategia = new EmparejamientoPorCercania(ubicacionField.getText().trim());
@@ -320,4 +352,40 @@ public class CreateMatchScreen {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
+
+private void mostrarDetallesPartido(Partido partido) {
+    StringBuilder detalles = new StringBuilder();
+    detalles.append("=== DETALLES DEL PARTIDO ===\n\n");
+    detalles.append("Deporte: ").append(partido.getDeporte()).append("\n");
+    detalles.append("Ubicación: ").append(partido.getUbicacion()).append("\n");
+    detalles.append("Fecha y Hora: ").append(partido.getHorario()).append("\n");
+    detalles.append("Duración: ").append(partido.getDuracion()).append(" horas\n");
+    detalles.append("Estado: ").append(partido.getNombreEstado()).append("\n");
+    detalles.append("Cupo: ").append(partido.getJugadores().size()).append("/")
+            .append(partido.getCupoMaximo()).append("\n\n");
+    
+    // Agregar información de la estrategia de emparejamiento
+    detalles.append("Estrategia de Emparejamiento: ").append(partido.getEmparejamiento().toString()).append("\n\n");
+
+    // Lista de jugadores
+    detalles.append("Jugadores:\n");
+    for (Jugador j : partido.getJugadores()) {
+        detalles.append("- ").append(j.getUsername())
+                .append(" (Nivel: ").append(j.getNivel())
+                .append(", Partidos jugados: ").append(j.getCantidadPartidosJugados())
+                .append(")\n");
+    }
+
+    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    alert.setTitle("Detalles del Partido");
+    alert.setHeaderText(null);
+    alert.setContentText(detalles.toString());
+    alert.getDialogPane().setPrefWidth(500);
+    
+    // Hacer que el diálogo sea redimensionable
+    alert.getDialogPane().setExpanded(true);
+    alert.getDialogPane().setExpandableContent(null);
+    
+    alert.showAndWait();
+}
 }

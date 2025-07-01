@@ -51,7 +51,7 @@ public class JugadorDAO implements Serializable {
         }
 
         jugadores.add(jugador);
-        System.out.println(jugadores.size() + " jugadores en la listaaaaaaaaaa");
+        System.out.println(jugadores.size() + " jugadores en la lista");
 
         return true;
     }
@@ -251,5 +251,25 @@ public class JugadorDAO implements Serializable {
     public void limpiar() {
         jugadores.clear();
         siguienteId = 1;
+    }
+
+    /**
+     * Actualiza los datos de un jugador existente
+     */
+    public boolean actualizarJugador(Jugador jugador) {
+        if (jugador == null) {
+            return false;
+        }
+
+        for (int i = 0; i < jugadores.size(); i++) {
+            if (jugadores.get(i).getIdJugador() == jugador.getIdJugador()) {
+                jugadores.set(i, jugador);
+                System.out.println("Jugador actualizado: " + jugador.getUsername() + 
+                                 " - Partidos jugados: " + jugador.getCantidadPartidosJugados());
+                return true;
+            }
+        }
+        
+        return false;
     }
 }
